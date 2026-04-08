@@ -1,0 +1,9 @@
+{
+    "name": "kamilw/quizarena",
+    "autoload": {
+        "psr-4": {
+            "QuizArena\\": "src/"
+        }
+    },
+    "require": {}
+}

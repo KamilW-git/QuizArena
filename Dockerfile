@@ -1,19 +1,18 @@
 FROM php:8.3-apache
- 
-# Install PostgreSQL driver for PHP
-RUN apt-get update && apt-get install -y libpq-dev \
+
+RUN apt-get update && apt-get install -y libpq-dev curl unzip \
     && docker-php-ext-install pdo pdo_pgsql \
-    && apt-get clean
- 
-# Set web root to /var/www/html/public
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
- 
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
-    /etc/apache2/sites-available/*.conf
- 
-RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' \
-    /etc/apache2/apache2.conf \
-    /etc/apache2/conf-available/*.conf
- 
-# Enable mod_rewrite
+    && curl -sS https://getcomposer.org/installer | php \
+    && mv composer.phar /usr/local/bin/composer \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' \
+    /etc/apache2/sites-available/000-default.conf
+
 RUN a2enmod rewrite
+
+WORKDIR /var/www/html
+
+COPY . .
+
+RUN composer install --no-interaction --optimize-autoloader

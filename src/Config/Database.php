@@ -1,5 +1,14 @@
 <?php
 
+namespace QuizArena\Config;
+
+use PDO;
+use QuizArena\Helpers\Env;
+
+Env::load(__DIR__ . '/../.env');
+
+
+
 class Database
 {
     private static ?PDO $connection = null;
@@ -24,4 +33,3 @@ class Database
         return self::$connection;
     }
 }
-?>

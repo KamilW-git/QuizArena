@@ -1,5 +1,4 @@
 services:
-
   app:
     build: .
     container_name: quizarena_app
@@ -7,6 +6,7 @@ services:
       - "8000:80"
     volumes:
       - .:/var/www/html
+      - vendor_data:/var/www/html/vendor
     depends_on:
       db:
         condition: service_healthy
@@ -37,3 +37,4 @@ services:
 
 volumes:
   pgdata:
+  vendor_data:
