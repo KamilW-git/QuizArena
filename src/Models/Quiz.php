@@ -120,4 +120,12 @@ class Quiz
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
+
+    public static function findById(PDO $db, string $id): ?array
+    {   
+        $stmt = $db->prepare('SELECT * FROM quizzes WHERE id = :id LIMIT 1');
+        $stmt->execute([':id' => $id]);
+        $row = $stmt->fetch();
+        return $row ?: null;
+    }
 }

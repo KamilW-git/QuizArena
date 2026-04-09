@@ -1,0 +1,337 @@
+/* ============================================================
+   play.css — QuizArena game screen
+   Depends on main.css for CSS custom properties + resets
+   ============================================================ */
+
+/* ── Layout ── */
+.game-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.25rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Ambient blobs (same pattern as other views) */
+.ambient {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+}
+.ambient__blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.18;
+}
+.ambient__blob--purple {
+    width: 600px; height: 600px;
+    background: var(--primary);
+    top: -150px; left: -150px;
+}
+.ambient__blob--green {
+    width: 500px; height: 500px;
+    background: var(--secondary);
+    bottom: -100px; right: -100px;
+}
+
+/* ── State switching ── */
+.game-state {
+    width: 100%;
+    max-width: 680px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    animation: fadeUp 0.35s ease both;
+}
+.game-state.is-hidden { display: none; }
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Loading ── */
+.loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+}
+.loader__ring {
+    width: 52px; height: 52px;
+    border: 3px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loader__text {
+    color: var(--text-muted, #888);
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+}
+
+/* ── Game header ── */
+.game-header {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+/* Progress */
+.game-progress {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.game-progress__label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted, #888);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+.game-progress__bar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+}
+.game-progress__fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 99px;
+    width: 0%;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Circular countdown timer */
+.game-timer {
+    position: relative;
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+}
+.timer__ring {
+    width: 52px; height: 52px;
+    transform: rotate(-90deg);
+    overflow: visible;
+}
+.timer__track {
+    fill: none;
+    stroke: var(--border);
+    stroke-width: 3;
+}
+.timer__arc {
+    fill: none;
+    stroke: var(--secondary);
+    stroke-width: 3;
+    stroke-linecap: round;
+    /* circumference of r=18: 2π×18 ≈ 113.1 */
+    stroke-dasharray: 113.1;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s linear, stroke 0.3s;
+}
+.timer__arc.is-urgent {
+    stroke: var(--tertiary);
+    animation: urgentPulse 0.5s ease infinite alternate;
+}
+@keyframes urgentPulse {
+    from { opacity: 1; }
+    to   { opacity: 0.5; }
+}
+.timer__count {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text, #fff);
+}
+
+/* ── Question card ── */
+.question-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem 2rem 1.75rem;
+    position: relative;
+    overflow: hidden;
+}
+.question-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+}
+.question-card__category {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin-bottom: 0.75rem;
+}
+.question-card__text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.5;
+    color: var(--text, #fff);
+    margin: 0;
+}
+
+/* ── Answers ── */
+.answers-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.875rem;
+}
+@media (max-width: 480px) {
+    .answers-grid { grid-template-columns: 1fr; }
+}
+
+.answer-btn {
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.1rem 1.25rem;
+    text-align: left;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text, #fff);
+    cursor: pointer;
+    transition: border-color 0.18s, background 0.18s, transform 0.12s;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    line-height: 1.4;
+}
+.answer-btn:hover:not(:disabled) {
+    border-color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 8%, var(--bg-card));
+    transform: translateY(-2px);
+}
+.answer-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+/* Letter badge (A / B / C / D) */
+.answer-btn__letter {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted, #888);
+    flex-shrink: 0;
+    transition: background 0.18s, color 0.18s, border-color 0.18s;
+}
+
+/* Result states applied after answering */
+.answer-btn.is-correct {
+    border-color: var(--secondary);
+    background: color-mix(in srgb, var(--secondary) 12%, var(--bg-card));
+}
+.answer-btn.is-correct .answer-btn__letter {
+    background: var(--secondary);
+    color: #000;
+    border-color: var(--secondary);
+}
+
+.answer-btn.is-wrong {
+    border-color: var(--tertiary);
+    background: color-mix(in srgb, var(--tertiary) 10%, var(--bg-card));
+}
+.answer-btn.is-wrong .answer-btn__letter {
+    background: var(--tertiary);
+    color: #fff;
+    border-color: var(--tertiary);
+}
+
+.answer-btn:disabled {
+    cursor: default;
+    opacity: 0.7;
+}
+
+/* Score strip */
+.score-strip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+}
+.score-strip__label {
+    color: var(--text-muted, #888);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+}
+.score-strip__value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--secondary);
+    min-width: 2ch;
+    text-align: center;
+    transition: transform 0.2s;
+}
+.score-strip__value.bump {
+    animation: scoreBump 0.3s ease;
+}
+@keyframes scoreBump {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.35); }
+    100% { transform: scale(1); }
+}
+
+/* ── Finish card ── */
+.finish-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3rem 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+.finish-card__icon {
+    font-size: 3rem;
+    line-height: 1;
+}
+.finish-card__title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--text, #fff);
+    margin: 0;
+}
+.finish-card__sub {
+    color: var(--text-muted, #888);
+    font-size: 0.95rem;
+    margin: 0;
+}
+.finish-card__spinner {
+    width: 32px; height: 32px;
+    border: 3px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-top: 0.5rem;
+}
