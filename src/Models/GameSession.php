@@ -3,6 +3,7 @@
 namespace QuizArena\Models;
 
 use PDO;
+use QuizArena\Models\Achievement;
 
 class GameSession
 {
@@ -123,12 +124,22 @@ class GameSession
             'session_id' => $sessionId,
         ]);
 
+        // Pobierz user_id tej sesji
+        $stmt = $this->db->prepare('SELECT user_id FROM game_sessions WHERE id = :id');
+        $stmt->execute(['id' => $sessionId]);
+        $userId = $stmt->fetchColumn();
+
+         // Sprawdź i przyznaj achievementy
+        $achievement = new Achievement($this->db);
+        $newlyUnlocked = $achievement->checkAndAward($userId);
+
         return [
             'score'          => $score,
             'correct_count'  => $correctCount,
             'total_questions'=> $totalQuestions,
             'xp_earned'      => $xpEarned,
             'accuracy'       => round($accuracy * 100),
+            'achievements'    => $newlyUnlocked,
         ];
     }
 

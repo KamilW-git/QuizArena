@@ -1,0 +1,83 @@
+/* ── Achievements — dopisz na końcu profile.css ── */
+
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.875rem;
+    animation: fadeUp 0.35s ease 0.16s both;
+}
+
+@media (max-width: 600px) {
+    .achievements-grid { grid-template-columns: 1fr; }
+}
+
+.ach-card {
+    border-radius: 14px;
+    padding: 1.1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border: 1.5px solid var(--border);
+    transition: border-color 0.2s, transform 0.2s;
+}
+.ach-card:hover { transform: translateY(-2px); }
+
+.ach-card--unlocked {
+    background: color-mix(in srgb, var(--secondary) 6%, var(--bg-card));
+    border-color: color-mix(in srgb, var(--secondary) 30%, var(--border));
+}
+.ach-card--locked {
+    background: var(--bg-card);
+    opacity: 0.55;
+    filter: grayscale(0.4);
+}
+
+.ach-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+    width: 44px;
+    text-align: center;
+}
+
+.ach-body { flex: 1; min-width: 0; }
+
+.ach-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.2rem;
+}
+.ach-desc {
+    font-size: 0.775rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+.ach-date {
+    font-size: 0.7rem;
+    color: var(--secondary);
+    font-weight: 600;
+    margin-top: 0.3rem;
+}
+.ach-xp {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    margin-top: 0.3rem;
+}
+
+.ach-check {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--secondary);
+    color: #000;
+    font-size: 0.8rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.ach-lock {
+    font-size: 1rem;
+    opacity: 0.4;
+    flex-shrink: 0;
+}

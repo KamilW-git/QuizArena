@@ -5,6 +5,7 @@ namespace QuizArena\Controllers;
 use PDO;
 use QuizArena\Models\Quiz;
 use QuizArena\Models\Question;
+use QuizArena\Models\Achievement;
 
 class QuizController
 {
@@ -55,7 +56,11 @@ class QuizController
 
             $this->db->commit();
 
-            return ['success' => true, 'quiz_id' => $quiz['id']];
+            // Sprawdź achievementy po utworzeniu quizu
+            $achievement   = new Achievement($this->db);
+            $newlyUnlocked = $achievement->checkAndAward($userId);
+
+            return ['success' => true, 'quiz_id' => $quiz['id'], 'achievements' => $newlyUnlocked];
 
         } catch (\Exception $e) {
             $this->db->rollBack();
