@@ -1,33 +1,256 @@
+/* ============================================================
+   browse.css — QuizArena browse page
+   ============================================================ */
+
+/* ── Page header ── */
+.page-header {
+    margin-bottom: 1.5rem;
+}
+.page-header h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.25rem;
+}
+.page-header p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* ── Search + sort bar ── */
+.browse-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 240px;
+}
+
+.search-input-wrap {
+    position: relative;
+    flex: 1;
+}
+.search-icon {
+    position: absolute;
+    left: 0.875rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.9rem;
+    pointer-events: none;
+    z-index: 1;
+}
+.search-input {
+    width: 100%;
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 0.7rem 2.5rem 0.7rem 2.5rem;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 0.2s;
+    /* Reset any global input styles */
+    box-sizing: border-box;
+}
+.search-input:focus { border-color: var(--primary); }
+.search-input::placeholder { color: var(--text-dim); }
+
+.search-clear {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.8rem;
+    line-height: 1;
+    transition: color 0.2s;
+}
+.search-clear:hover { color: var(--tertiary); }
+
+.search-btn {
+    background: var(--primary);
+    border: none;
+    border-radius: 10px;
+    padding: 0.7rem 1.25rem;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.search-btn:hover {
+    background: var(--primary-dim);
+    transform: translateY(-1px);
+}
+
+/* ── Sort ── */
+.sort-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+.sort-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+}
+.sort-options {
+    display: flex;
+    gap: 0.25rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.25rem;
+}
+.sort-opt {
+    display: inline-block;
+    padding: 0.375rem 0.875rem;
+    border-radius: 7px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none !important;
+    color: var(--text-muted) !important;
+    border: none;
+    transition: all 0.2s;
+    white-space: nowrap;
+    line-height: 1.4;
+}
+.sort-opt:hover {
+    color: var(--text) !important;
+    background: var(--bg-card2);
+}
+.sort-opt.active {
+    background: var(--primary) !important;
+    color: #fff !important;
+}
+
+/* ── Category filters ── */
 .filters {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
-    margin-bottom: 2rem;
+    margin-bottom: 0.75rem;
 }
-
 .filter-tag {
+    display: inline-block;
     padding: 0.4rem 1rem;
     border-radius: 50px;
     border: 1px solid var(--border);
     background: transparent;
-    color: var(--text-muted);
+    color: var(--text-muted) !important;
     font-size: 0.8rem;
     font-weight: 600;
-    text-decoration: none;
+    text-decoration: none !important;
     transition: all 0.2s;
+    line-height: 1.4;
 }
-
 .filter-tag:hover {
     border-color: var(--primary);
-    color: var(--text);
+    color: var(--text) !important;
 }
-
 .filter-tag.active {
     background: var(--primary);
     border-color: var(--primary);
-    color: #fff;
+    color: #fff !important;
 }
 
+/* ── Difficulty filter row ── */
+.diff-filters {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+}
+.diff-tag {
+    display: inline-block;
+    padding: 0.35rem 0.875rem;
+    border-radius: 8px;
+    font-size: 0.775rem;
+    font-weight: 600;
+    text-decoration: none !important;
+    color: var(--text-muted) !important;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+    line-height: 1.4;
+}
+.diff-tag:hover {
+    border-color: var(--primary);
+    color: var(--text) !important;
+}
+.diff-tag.active {
+    background: color-mix(in srgb, var(--primary) 20%, var(--bg-card));
+    border-color: var(--primary);
+    color: var(--text) !important;
+}
+
+/* ── Active filters summary ── */
+.active-filters {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+    padding: 0.625rem 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+.active-filters__label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+.active-filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: color-mix(in srgb, var(--primary) 12%, var(--bg-card2));
+    border: 1px solid color-mix(in srgb, var(--primary) 30%, var(--border));
+    border-radius: 6px;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.775rem;
+    font-weight: 600;
+    color: var(--text);
+}
+.active-filter-chip a {
+    color: var(--text-dim) !important;
+    text-decoration: none !important;
+    font-size: 0.75rem;
+    transition: color 0.2s;
+    line-height: 1;
+}
+.active-filter-chip a:hover { color: var(--tertiary) !important; }
+
+.active-filters__clear {
+    margin-left: auto;
+    font-size: 0.775rem;
+    font-weight: 700;
+    color: var(--tertiary) !important;
+    text-decoration: none !important;
+    transition: opacity 0.2s;
+}
+.active-filters__clear:hover { opacity: 0.7; }
+
+/* ── Quiz grid ── */
 .quiz-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -39,12 +262,11 @@
     border: 1px solid var(--border);
     border-radius: 16px;
     overflow: hidden;
-    text-decoration: none;
-    color: var(--text);
+    text-decoration: none !important;
+    color: var(--text) !important;
     display: block;
     transition: all 0.2s;
 }
-
 .quiz-card:hover {
     border-color: var(--primary);
     transform: translateY(-3px);
@@ -59,7 +281,6 @@
     justify-content: center;
     position: relative;
 }
-
 .quiz-card-icon { font-size: 3rem; }
 
 .quiz-card-category {
@@ -75,21 +296,37 @@
     letter-spacing: 0.05em;
 }
 
+.quiz-card-diff {
+    position: absolute;
+    bottom: 8px;
+    left: 10px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    padding: 2px 7px;
+    border-radius: 5px;
+    backdrop-filter: blur(4px);
+}
+
 .quiz-card-body { padding: 1rem; }
 
 .quiz-card-title {
     font-size: 1rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
+    color: var(--text);
 }
 
 .quiz-card-meta {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     font-size: 0.75rem;
     color: var(--text-muted);
     margin-bottom: 0.75rem;
 }
+.quiz-card-plays { color: var(--text-dim); }
 
 .quiz-card-footer {
     display: flex;
@@ -98,15 +335,25 @@
     padding-top: 0.75rem;
     border-top: 1px solid var(--border);
 }
-
 .quiz-card-author {
     font-size: 0.75rem;
     color: var(--text-dim);
 }
-
 .quiz-card-play {
     font-size: 0.75rem;
     font-weight: 700;
     color: var(--secondary);
     letter-spacing: 0.05em;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .quiz-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+    .quiz-grid        { grid-template-columns: 1fr; }
+    .browse-bar       { flex-direction: column; align-items: stretch; }
+    .sort-wrap        { flex-wrap: wrap; }
+    .sort-options     { flex-wrap: wrap; }
+    .search-form      { min-width: unset; }
 }
