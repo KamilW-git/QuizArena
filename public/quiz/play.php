@@ -9,20 +9,12 @@ use QuizArena\Config\Database;
 Env::load(__DIR__ . '/../../.env');
 Auth::require();
 
-#$quizId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-
 $quizId = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_SPECIAL_CHARS);
 if (!$quizId) {
     header('Location: /quiz/browse.php');
     exit;
 }
 
-if (!$quizId) {
-    header('Location: /quiz/browse.php');
-    exit;
-}
-
-// Load quiz metadata for the header (title, question count)
 $db   = Database::connect();
 $quiz = Quiz::findById($db, $quizId);
 
@@ -46,7 +38,6 @@ $user = Auth::user();
 </head>
 <body>
 
-<!-- Ambient background blobs -->
 <div class="ambient" aria-hidden="true">
     <div class="ambient__blob ambient__blob--purple"></div>
     <div class="ambient__blob ambient__blob--green"></div>
@@ -54,18 +45,18 @@ $user = Auth::user();
 
 <main class="game-wrap">
 
-    <!-- ── LOADING STATE ── -->
+    <!-- LOADING -->
     <div class="game-state" id="state-loading">
         <div class="loader">
             <div class="loader__ring"></div>
-            <p class="loader__text">Loading quiz…</p>
+            <p class="loader__text">Loading quiz...</p>
         </div>
     </div>
 
-    <!-- ── PLAYING STATE ── -->
+    <!-- PLAYING -->
     <div class="game-state is-hidden" id="state-playing">
 
-        <!-- Top bar: progress + timer -->
+        <!-- Desktop: progress + maly timer w headerze -->
         <header class="game-header">
             <div class="game-progress">
                 <span class="game-progress__label">
@@ -75,51 +66,63 @@ $user = Auth::user();
                     <div class="game-progress__fill" id="progress-fill"></div>
                 </div>
             </div>
-
             <div class="game-timer" id="timer-wrap">
-                <svg class="timer__ring" viewBox="0 0 44 44" aria-hidden="true">
-                    <circle class="timer__track" cx="22" cy="22" r="18"/>
-                    <circle class="timer__arc"   cx="22" cy="22" r="18" id="timer-arc"/>
+                <!-- viewBox 180x180, r=80, circumference=502.7 -->
+                <svg class="timer__ring" viewBox="0 0 180 180" aria-hidden="true">
+                    <circle class="timer__track" cx="90" cy="90" r="80"/>
+                    <circle class="timer__arc"   cx="90" cy="90" r="80" id="timer-arc"/>
                 </svg>
                 <span class="timer__count" id="timer-count">20</span>
             </div>
         </header>
 
-        <!-- Question card -->
+        <!-- Pytanie -->
         <div class="question-card" id="question-card">
             <p class="question-card__category" id="q-category">Category</p>
-            <h2 class="question-card__text" id="q-text">Question text loads here</h2>
+            <h2 class="question-card__text" id="q-text">Loading...</h2>
         </div>
 
-        <!-- Answer grid -->
-        <div class="answers-grid" id="answers-grid" role="list">
-            <!-- Injected by JS: four .answer-btn buttons -->
-        </div>
+        <!-- Odpowiedzi -->
+        <div class="answers-grid" id="answers-grid" role="list"></div>
 
-        <!-- Score strip -->
+        <!-- Score strip: desktop=inline center, mobile=sticky footer -->
         <div class="score-strip">
-            <span class="score-strip__label">Score</span>
-            <span class="score-strip__value" id="live-score">0</span>
+            <div class="score-strip__left">
+                <span class="score-strip__q-label">CURRENT PROGRESS</span>
+                <div class="score-strip__q-row">
+                    <span class="score-strip__q-num">
+                        <span id="footer-current">01</span>
+                        <span class="score-strip__q-sep"> / </span>
+                        <span id="footer-total">10</span>
+                    </span>
+                </div>
+                <div class="score-strip__bar">
+                    <div class="score-strip__bar-fill" id="progress-fill-footer"></div>
+                </div>
+            </div>
+            <div class="score-strip__right">
+                <span class="score-strip__label">SCORE</span>
+                <span class="score-strip__value" id="live-score">0</span>
+            </div>
         </div>
 
     </div>
 
-    <!-- ── FINISHED STATE ── -->
+    <!-- FINISHED -->
     <div class="game-state is-hidden" id="state-finished">
         <div class="finish-card">
-            <div class="finish-card__icon" aria-hidden="true">🏆</div>
+            <div class="finish-card__icon">🏆</div>
             <h2 class="finish-card__title">Quiz Complete!</h2>
-            <p class="finish-card__sub">Calculating your XP…</p>
+            <p class="finish-card__sub">Calculating your XP...</p>
             <div class="finish-card__spinner"></div>
         </div>
     </div>
 
 </main>
 
-<!-- Pass PHP data to JS cleanly via data attributes -->
 <script>
-    window.QUIZ_ID = <?= json_encode($quizId) ?>;
-    window.USER_ID   = <?= (int) $user['id'] ?>;
+    window.QUIZ_ID    = <?= json_encode($quizId) ?>;
+    window.USER_ID    = <?= (int) $user['id'] ?>;
     window.QUIZ_TITLE = <?= json_encode($quiz['title']) ?>;
 </script>
 <script src="/assets/js/game.js"></script>

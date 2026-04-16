@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const TIMER_CIRCUMFERENCE = 2 * Math.PI * 18;
+const TIMER_CIRCUMFERENCE = 2 * Math.PI * 80; // r=80, SVG viewBox 180x180
 const LETTERS = ['A', 'B', 'C', 'D'];
 
 const states = {
@@ -21,7 +21,10 @@ const ui = {
     qCategory:    document.getElementById('q-category'),
     qText:        document.getElementById('q-text'),
     answersGrid:  document.getElementById('answers-grid'),
-    liveScore:    document.getElementById('live-score'),
+    liveScore:     document.getElementById('live-score'),
+    footerCurrent: document.getElementById('footer-current'),
+    footerTotal:   document.getElementById('footer-total'),
+    progressFooter:document.getElementById('progress-fill-footer'),
 };
 
 let sessionId     = null;
@@ -67,6 +70,7 @@ async function startGame() {
     }
     if (!questions.length) { showError('This quiz has no questions yet.'); return; }
     ui.qTotal.textContent = questions.length;
+    if (ui.footerTotal) ui.footerTotal.textContent = questions.length;
     showState('playing');
     renderQuestion(0);
 }
@@ -77,6 +81,8 @@ function renderQuestion(idx) {
     const q      = questions[idx];
 
     ui.qCurrent.textContent     = idx + 1;
+    if (ui.footerCurrent) ui.footerCurrent.textContent = String(idx + 1).padStart(2, '0');
+    if (ui.progressFooter) ui.progressFooter.style.width = ((idx / questions.length) * 100) + '%';
     ui.progressFill.style.width = ((idx / questions.length) * 100) + '%';
     ui.qCategory.textContent    = q.category ?? 'General';
     ui.qText.textContent        = q.text;

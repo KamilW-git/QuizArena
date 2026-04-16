@@ -1,20 +1,10 @@
 /* ============================================================
    play.css — QuizArena game screen
-   Depends on main.css for CSS custom properties + resets
+   Desktop: header z timerem + question card + 2-col answers
+   Mobile:  pytanie → duży timer → 1-col answers → sticky footer
    ============================================================ */
 
-/* ── Layout ── */
-.game-wrap {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem 1.25rem;
-    position: relative;
-    z-index: 1;
-}
-
-/* Ambient blobs (same pattern as other views) */
+/* ── Ambient blobs ── */
 .ambient {
     position: fixed;
     inset: 0;
@@ -37,6 +27,17 @@
     width: 500px; height: 500px;
     background: var(--secondary);
     bottom: -100px; right: -100px;
+}
+
+/* ── Layout ── */
+.game-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.25rem;
+    position: relative;
+    z-index: 1;
 }
 
 /* ── State switching ── */
@@ -70,21 +71,18 @@
     animation: spin 0.8s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-
 .loader__text {
-    color: var(--text-muted, #888);
+    color: var(--text-muted);
     font-size: 0.95rem;
     letter-spacing: 0.04em;
 }
 
-/* ── Game header ── */
+/* ── Game header (desktop) ── */
 .game-header {
     display: flex;
     align-items: center;
     gap: 1.25rem;
 }
-
-/* Progress */
 .game-progress {
     flex: 1;
     display: flex;
@@ -94,7 +92,7 @@
 .game-progress__label {
     font-size: 0.8rem;
     font-weight: 600;
-    color: var(--text-muted, #888);
+    color: var(--text-muted);
     letter-spacing: 0.06em;
     text-transform: uppercase;
 }
@@ -112,7 +110,7 @@
     transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Circular countdown timer */
+/* ── Timer (desktop) ── */
 .game-timer {
     position: relative;
     width: 52px;
@@ -134,7 +132,6 @@
     stroke: var(--secondary);
     stroke-width: 3;
     stroke-linecap: round;
-    /* circumference of r=18: 2π×18 ≈ 113.1 */
     stroke-dasharray: 113.1;
     stroke-dashoffset: 0;
     transition: stroke-dashoffset 1s linear, stroke 0.3s;
@@ -155,7 +152,7 @@
     justify-content: center;
     font-size: 0.9rem;
     font-weight: 700;
-    color: var(--text, #fff);
+    color: var(--text);
 }
 
 /* ── Question card ── */
@@ -186,20 +183,16 @@
     font-size: 1.25rem;
     font-weight: 700;
     line-height: 1.5;
-    color: var(--text, #fff);
+    color: var(--text);
     margin: 0;
 }
 
-/* ── Answers ── */
+/* ── Answers (desktop: 2 col) ── */
 .answers-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.875rem;
 }
-@media (max-width: 480px) {
-    .answers-grid { grid-template-columns: 1fr; }
-}
-
 .answer-btn {
     background: var(--bg-card);
     border: 1.5px solid var(--border);
@@ -209,7 +202,7 @@
     font-family: inherit;
     font-size: 0.95rem;
     font-weight: 500;
-    color: var(--text, #fff);
+    color: var(--text);
     cursor: pointer;
     transition: border-color 0.18s, background 0.18s, transform 0.12s;
     display: flex;
@@ -222,11 +215,8 @@
     background: color-mix(in srgb, var(--primary) 8%, var(--bg-card));
     transform: translateY(-2px);
 }
-.answer-btn:active:not(:disabled) {
-    transform: translateY(0);
-}
+.answer-btn:active:not(:disabled) { transform: translateY(0); }
 
-/* Letter badge (A / B / C / D) */
 .answer-btn__letter {
     width: 28px; height: 28px;
     border-radius: 8px;
@@ -237,12 +227,10 @@
     justify-content: center;
     font-size: 0.75rem;
     font-weight: 700;
-    color: var(--text-muted, #888);
+    color: var(--text-muted);
     flex-shrink: 0;
     transition: background 0.18s, color 0.18s, border-color 0.18s;
 }
-
-/* Result states applied after answering */
 .answer-btn.is-correct {
     border-color: var(--secondary);
     background: color-mix(in srgb, var(--secondary) 12%, var(--bg-card));
@@ -252,7 +240,6 @@
     color: #000;
     border-color: var(--secondary);
 }
-
 .answer-btn.is-wrong {
     border-color: var(--tertiary);
     background: color-mix(in srgb, var(--tertiary) 10%, var(--bg-card));
@@ -262,22 +249,17 @@
     color: #fff;
     border-color: var(--tertiary);
 }
+.answer-btn:disabled { cursor: default; opacity: 0.7; }
 
-.answer-btn:disabled {
-    cursor: default;
-    opacity: 0.7;
-}
-
-/* Score strip */
+/* ── Score strip (desktop) ── */
 .score-strip {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    font-size: 0.85rem;
 }
 .score-strip__label {
-    color: var(--text-muted, #888);
+    color: var(--text-muted);
     font-weight: 500;
     letter-spacing: 0.04em;
     text-transform: uppercase;
@@ -289,11 +271,8 @@
     color: var(--secondary);
     min-width: 2ch;
     text-align: center;
-    transition: transform 0.2s;
 }
-.score-strip__value.bump {
-    animation: scoreBump 0.3s ease;
-}
+.score-strip__value.bump { animation: scoreBump 0.3s ease; }
 @keyframes scoreBump {
     0%   { transform: scale(1); }
     50%  { transform: scale(1.35); }
@@ -312,21 +291,9 @@
     align-items: center;
     gap: 1rem;
 }
-.finish-card__icon {
-    font-size: 3rem;
-    line-height: 1;
-}
-.finish-card__title {
-    font-size: 1.75rem;
-    font-weight: 800;
-    color: var(--text, #fff);
-    margin: 0;
-}
-.finish-card__sub {
-    color: var(--text-muted, #888);
-    font-size: 0.95rem;
-    margin: 0;
-}
+.finish-card__icon { font-size: 3rem; line-height: 1; }
+.finish-card__title { font-size: 1.75rem; font-weight: 800; color: var(--text); margin: 0; }
+.finish-card__sub   { color: var(--text-muted); font-size: 0.95rem; margin: 0; }
 .finish-card__spinner {
     width: 32px; height: 32px;
     border: 3px solid var(--border);
@@ -334,4 +301,215 @@
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
     margin-top: 0.5rem;
+}
+
+/* ============================================================
+   MOBILE (≤ 640px)
+   Layout: navbar → pytanie → duży timer → odpowiedzi → sticky footer
+   ============================================================ */
+@media (max-width: 640px) {
+
+    .game-wrap {
+        align-items: flex-start;
+        justify-content: flex-start;
+        padding: 0;
+        padding-bottom: 80px;
+    }
+
+    .game-state {
+        max-width: 100%;
+        gap: 0;
+        min-height: calc(100vh - 64px);
+    }
+
+    /* Ukryj desktop header (mały timer + progress label) */
+    .game-header { display: none; }
+
+    /* Pytanie */
+    .question-card {
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        border-top: none;
+        padding: 1.5rem 1.25rem 1.25rem;
+        background: transparent;
+    }
+    .question-card::before { display: none; }
+    .question-card__category {
+        color: var(--secondary);
+        font-size: 0.7rem;
+        letter-spacing: 0.14em;
+        text-align: center;
+    }
+    .question-card__text {
+        font-size: 1.35rem;
+        font-weight: 800;
+        text-align: center;
+        line-height: 1.4;
+    }
+
+    /* Duży timer — wyśrodkowany */
+    .game-timer {
+        width: 180px;
+        height: 180px;
+        margin: 1rem auto;
+        align-self: center;
+        flex-shrink: 0;
+    }
+    .timer__ring {
+        width: 180px;
+        height: 180px;
+        viewBox: "0 0 180 180";
+    }
+    .timer__track {
+        stroke-width: 8;
+        cx: 90; cy: 90; r: 80;
+    }
+    .timer__arc {
+        stroke-width: 8;
+        cx: 90; cy: 90; r: 80;
+        /* circumference r=80: 2π×80 ≈ 502.7 */
+        stroke-dasharray: 502.7;
+    }
+    .timer__count {
+        font-size: 3.5rem;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+    }
+
+    /* Odpowiedzi: 1 kolumna, pill shape */
+    .answers-grid {
+        grid-template-columns: 1fr;
+        gap: 0.625rem;
+        padding: 0.5rem 1rem 1rem;
+    }
+    .answer-btn {
+        border-radius: 50px;
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-width: 2px;
+        min-height: 60px;
+    }
+    .answer-btn__letter {
+        width: 38px; height: 38px;
+        border-radius: 50%;
+        font-size: 0.9rem;
+        font-weight: 800;
+    }
+
+    /* Sticky footer: progress + Q X/Y + score */
+    .score-strip {
+        position: fixed;
+        bottom: 0; left: 0; right: 0;
+        background: var(--bg-card);
+        border-top: 1px solid var(--border);
+        padding: 0.875rem 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 100;
+        gap: 1rem;
+    }
+    .score-strip__label {
+        font-size: 0.65rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        display: block;
+    }
+    .score-strip__value {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--primary);
+    }
+
+    /* Progress bar jako cienka linia nad footerem */
+    .game-progress {
+        position: fixed;
+        bottom: 64px; left: 0; right: 0;
+        z-index: 101;
+        flex-direction: row;
+        padding: 0;
+        gap: 0;
+    }
+    .game-progress__label { display: none; }
+    .game-progress__bar {
+        height: 3px;
+        border-radius: 0;
+        flex: 1;
+    }
+    .game-progress__fill { border-radius: 0; }
+}
+
+/* ── Score strip — nowe elementy (desktop: ukryte, mobile: footer) ── */
+.score-strip__left {
+    display: none; /* desktop nie używa tego layoutu */
+}
+.score-strip__q-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--secondary);
+}
+.score-strip__q-row { margin: 0.1rem 0; }
+.score-strip__q-num {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--secondary);
+    line-height: 1;
+}
+.score-strip__q-sep { color: var(--text-dim); font-weight: 400; }
+.score-strip__bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+    width: 80px;
+    margin-top: 0.3rem;
+}
+.score-strip__bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 99px;
+    width: 0%;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.score-strip__right { display: flex; flex-direction: column; align-items: flex-end; gap: 0; }
+
+@media (max-width: 640px) {
+
+    /* Pokaż left panel */
+    .score-strip__left { display: block; }
+
+    /* Score strip jako sticky footer */
+    .score-strip {
+        position: fixed;
+        bottom: 0; left: 0; right: 0;
+        background: var(--bg-card);
+        border-top: 1px solid var(--border);
+        padding: 0.75rem 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 100;
+        gap: 1rem;
+    }
+
+    /* Ukryj stary inline label/value w center */
+    .score-strip > .score-strip__label { display: none; }
+
+    .score-strip__value {
+        font-size: 1.6rem;
+        color: var(--primary);
+        font-weight: 800;
+    }
+    .score-strip__right .score-strip__label {
+        display: block;
+        font-size: 0.6rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        color: var(--text-muted);
+        text-align: right;
+    }
 }
