@@ -120,7 +120,9 @@ INSERT INTO users (username, email, password_hash) VALUES
 
 -- Przykładowe achievementy
 INSERT INTO achievements (key, name, description, xp_reward) VALUES
-    ('first_game',    'First Blood',    'Complete your first quiz',           50),
-    ('perfect_score', 'Perfect Score',  'Get 100% correct answers in a quiz', 200),
-    ('quiz_creator',  'Quiz Master',    'Create your first quiz',             100),
-    ('ten_games',     'Dedicated',      'Complete 10 quizzes',                150);
+    ('first_game',     'First Blood',    'Complete your first quiz',                   50),
+    ('perfect_score',  'Perfect Score',  'Get 100% correct answers in a quiz',         200),
+    ('quiz_creator',   'Quiz Master',    'Create your first quiz',                     100),
+    ('ten_games',      'Dedicated',      'Complete 10 quizzes',                        150),
+    ('ten_day_streak', '10 Day Streak',  'Play a game for 10 consecutive days',        300),
+    ('legend',         'Arena Legend',   'Finish in the Top 10 at the end of the month', 500);
