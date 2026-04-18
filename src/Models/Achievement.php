@@ -40,7 +40,8 @@ class Achievement
                         SELECT COUNT(*) FROM game_answers ga WHERE ga.session_id = gs.id
                     ) AND gs.correct_count > 0 THEN 1 ELSE 0 END
                 ), 0)                                               AS has_perfect,
-                COUNT(DISTINCT q.id)                                AS quizzes_created
+                COUNT(DISTINCT q.id)                                AS quizzes_created,
+                COUNT(DISTINCT DATE(gs.completed_at))               AS distinct_days
             FROM users u
             LEFT JOIN game_sessions gs ON gs.user_id = u.id
             LEFT JOIN quizzes q        ON q.user_id  = u.id
@@ -49,12 +50,14 @@ class Achievement
         $stmt->execute(['uid' => $userId]);
         $s = $stmt->fetch();
 
-        // Definicje warunków — klucz => callable zwracające bool
+        // Definicje warunków — klucz => callable zwracające bool albo prosty bool
         $conditions = [
-            'first_game'    => (int)$s['games_played']    >= 1,
-            'ten_games'     => (int)$s['games_played']    >= 10,
-            'perfect_score' => (int)$s['has_perfect']     >= 1,
-            'quiz_creator'  => (int)$s['quizzes_created'] >= 1,
+            'first_game'     => (int)$s['games_played']    >= 1,
+            'ten_games'      => (int)$s['games_played']    >= 10,
+            'perfect_score'  => (int)$s['has_perfect']     >= 1,
+            'quiz_creator'   => (int)$s['quizzes_created'] >= 1,
+            'ten_day_streak' => (int)$s['distinct_days']   >= 10,  // uproszczona logika streak dla prototypu
+            'legend'         => false, // Przyznawane automatycznie przez cron np. na koniec miesiąca
         ];
 
         foreach ($conditions as $key => $met) {
