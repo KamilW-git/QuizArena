@@ -317,11 +317,13 @@ $catIcon   = [
         <?php foreach ($achievements as $ach):
             $unlocked = (bool) $ach['unlocked'];
             $icon = match($ach['key']) {
-                'first_game'    => '🎮',
-                'perfect_score' => '💯',
-                'quiz_creator'  => '✏️',
-                'ten_games'     => '🔥',
-                default         => '🏅',
+                'first_game'     => '🎮',
+                'perfect_score'  => '💯',
+                'quiz_creator'   => '✏️',
+                'ten_games'      => '🕹️',
+                'ten_day_streak' => '🔥',
+                'legend'         => '👑',
+                default          => '🏅',
             };
         ?>
             <div class="ach-card <?= $unlocked ? 'ach-card--unlocked' : 'ach-card--locked' ?>">
@@ -351,5 +353,38 @@ $catIcon   = [
             
 
 </div>
+<!-- Mobile Bottom Nav -->
+<div class="mobile-bottom-nav">
+    <div class="mobile-bottom-nav__inner">
+        <a href="/dashboard.php" class="bottom-nav-item" data-nav="dashboard">
+            <span class="bottom-nav-icon">🏠</span>
+            <span>Home</span>
+        </a>
+        <a href="/quiz/browse.php" class="bottom-nav-item" data-nav="browse">
+            <span class="bottom-nav-icon">🔍</span>
+            <span>Browse</span>
+        </a>
+        <a href="/leaderboard/index.php" class="bottom-nav-item" data-nav="leaderboard">
+            <span class="bottom-nav-icon">📊</span>
+            <span>Arena</span>
+        </a>
+        <a href="/profile/index.php" class="bottom-nav-item" data-nav="profile">
+            <span class="bottom-nav-icon">👤</span>
+            <span>Profile</span>
+        </a>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const path = window.location.pathname;
+    document.querySelectorAll('.bottom-nav-item').forEach(item => {
+        if (path.includes(item.dataset.nav)) {
+            item.classList.add('active');
+        } else if (path === '/' && item.dataset.nav === 'dashboard') {
+            item.classList.add('active');
+        }
+    });
+});
+</script>
 </body>
 </html>

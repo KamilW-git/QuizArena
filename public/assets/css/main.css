@@ -646,3 +646,75 @@ input:focus { border-color: var(--primary); }
     /* Auth card */
     .auth-card { padding: 1.75rem 1.25rem; }
 }
+
+/* ============================================================
+   MOBILE BOTTOM NAV
+   ============================================================ */
+.mobile-bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    padding: 0.5rem 1rem;
+    padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+    z-index: 999;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.mobile-bottom-nav__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    color: var(--text-muted); /* szare teksty domyslnie */
+    text-decoration: none;
+    font-size: 0.65rem;
+    font-weight: 700;
+    min-width: 60px;
+    transition: color 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.bottom-nav-icon {
+    font-size: 1.35rem;
+    transition: transform 0.2s, filter 0.2s;
+    filter: grayscale(100%) opacity(0.6); /* szare ikonki domyslnie */
+}
+
+.bottom-nav-item:hover {
+    color: var(--text);
+}
+
+.bottom-nav-item.active {
+    color: var(--secondary); /* zielone przy kliknieciu/aktywne */
+}
+
+/* Kiedy element jest aktywny, nadaje kolory ikonie */
+.bottom-nav-item.active .bottom-nav-icon {
+    transform: translateY(-2px);
+    /* Sciagamy szarosc, dodajemy zielony cien zgodny z kolorem secondary */
+    filter: drop-shadow(0 0 8px rgba(0, 255, 148, 0.7)) grayscale(0%) opacity(1);
+}
+
+@media (max-width: 768px) {
+    .mobile-bottom-nav {
+        display: block;
+    }
+    
+    .fab {
+        bottom: 80px; /* Podniesiony nad navbar */
+    }
+
+    body {
+        padding-bottom: 75px; 
+    }
+}
