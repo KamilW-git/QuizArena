@@ -1,27 +1,25 @@
-/* ============================================================
-   Zastąp cały main.css tym plikiem
-   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&display=swap');
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
 :root {
-    --primary:     #7C4DFF;
+    --primary: #7C4DFF;
     --primary-dim: #5a35cc;
-    --secondary:   #00FF94;
-    --tertiary:    #FF00D4;
-    --bg:          #0d0e12;
-    --bg-card:     #1a1b1f;
-    --bg-card2:    #212228;
-    --border:      #2a2b32;
-    --text:        #ffffff;
-    --text-muted:  #8b8d9a;
-    --text-dim:    #5a5c6a;
+    --secondary: #00FF94;
+    --tertiary: #FF00D4;
+    --bg: #0d0e12;
+    --bg-card: #1a1b1f;
+    --bg-card2: #212228;
+    --border: #2a2b32;
+    --text: #ffffff;
+    --text-muted: #8b8d9a;
+    --text-dim: #5a5c6a;
 }
 
 body {
@@ -46,19 +44,30 @@ body {
 }
 
 .nav-logo {
-    font-size: 1.3rem;
-    font-weight: 800;
+    font-size: 1.5rem;
+    font-weight: 900;
+    font-style: italic;
     text-decoration: none;
-    color: var(--text);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.05em;
+    background: linear-gradient(135deg, #7e51ff, #b6a0ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    display: inline-block;
     flex-shrink: 0;
 }
-.nav-logo span { color: var(--primary); }
+
+.nav-logo span {
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
 
 .nav-links {
     display: flex;
     gap: 0.25rem;
 }
+
 .nav-links a {
     color: var(--text-muted);
     text-decoration: none;
@@ -70,13 +79,22 @@ body {
     position: relative;
     white-space: nowrap;
 }
-.nav-links a:hover { color: var(--text); background: var(--bg-card2); }
-.nav-links a.active { color: var(--text); }
+
+.nav-links a:hover {
+    color: var(--text);
+    background: var(--bg-card2);
+}
+
+.nav-links a.active {
+    color: var(--text);
+}
+
 .nav-links a.active::after {
     content: '';
     position: absolute;
     bottom: -1px;
-    left: 1rem; right: 1rem;
+    left: 1rem;
+    right: 1rem;
     height: 2px;
     background: var(--secondary);
     border-radius: 2px;
@@ -90,7 +108,8 @@ body {
 }
 
 .nav-bell {
-    width: 36px; height: 36px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     background: var(--bg-card2);
     border: 1px solid var(--border);
@@ -103,10 +122,15 @@ body {
     text-decoration: none;
     transition: all 0.2s;
 }
-.nav-bell:hover { border-color: var(--primary); color: var(--text); }
+
+.nav-bell:hover {
+    border-color: var(--primary);
+    color: var(--text);
+}
 
 .nav-avatar {
-    width: 40px; height: 40px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--primary), var(--secondary));
     display: flex;
@@ -120,9 +144,11 @@ body {
     text-decoration: none;
     flex-shrink: 0;
 }
+
 .nav-level {
     position: absolute;
-    bottom: -4px; right: -4px;
+    bottom: -4px;
+    right: -4px;
     background: var(--secondary);
     color: #000;
     font-size: 0.6rem;
@@ -151,13 +177,16 @@ body {
     border-radius: 16px;
     padding: 2rem;
 }
+
 .hero-left {
     display: flex;
     align-items: center;
     gap: 1.5rem;
 }
+
 .hero-avatar {
-    width: 80px; height: 80px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--primary), var(--tertiary));
     flex-shrink: 0;
@@ -167,7 +196,13 @@ body {
     font-size: 2rem;
     border: 3px solid var(--primary);
 }
-.hero-greeting { font-size: 1rem; color: var(--text-muted); margin-bottom: 0.25rem; }
+
+.hero-greeting {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+}
+
 .hero-name {
     font-size: 2rem;
     font-weight: 800;
@@ -176,9 +211,20 @@ body {
     line-height: 1.1;
     margin-bottom: 0.5rem;
 }
-.hero-rank { font-size: 0.8rem; color: var(--text-dim); }
-.hero-rank span { color: var(--text-muted); }
-.hero-xp { text-align: right; }
+
+.hero-rank {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+}
+
+.hero-rank span {
+    color: var(--text-muted);
+}
+
+.hero-xp {
+    text-align: right;
+}
+
 .hero-xp-label {
     font-size: 0.7rem;
     font-weight: 700;
@@ -186,13 +232,18 @@ body {
     color: var(--secondary);
     margin-bottom: 0.5rem;
 }
+
 .hero-xp-values {
     font-size: 0.875rem;
     color: var(--text-muted);
     margin-bottom: 0.75rem;
     text-align: right;
 }
-.hero-xp-values strong { color: var(--text); }
+
+.hero-xp-values strong {
+    color: var(--text);
+}
+
 .xp-bar {
     width: 100%;
     height: 8px;
@@ -200,6 +251,7 @@ body {
     border-radius: 4px;
     overflow: hidden;
 }
+
 .xp-bar-fill {
     height: 100%;
     border-radius: 4px;
@@ -214,6 +266,7 @@ body {
     gap: 1rem;
     margin-bottom: 1.5rem;
 }
+
 .stat-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
@@ -224,10 +277,23 @@ body {
     justify-content: space-between;
     transition: border-color 0.2s;
 }
-.stat-card:hover { border-color: var(--primary); }
-.stat-card.wins  { border-left: 3px solid var(--secondary); }
-.stat-card.games { border-left: 3px solid var(--primary); }
-.stat-card.acc   { border-left: 3px solid var(--tertiary); }
+
+.stat-card:hover {
+    border-color: var(--primary);
+}
+
+.stat-card.wins {
+    border-left: 3px solid var(--secondary);
+}
+
+.stat-card.games {
+    border-left: 3px solid var(--primary);
+}
+
+.stat-card.acc {
+    border-left: 3px solid var(--tertiary);
+}
+
 .stat-label {
     font-size: 0.7rem;
     font-weight: 700;
@@ -236,17 +302,35 @@ body {
     text-transform: uppercase;
     margin-bottom: 0.5rem;
 }
+
 .stat-value {
     font-size: 2.5rem;
     font-weight: 800;
     letter-spacing: -0.03em;
     line-height: 1;
 }
-.stat-card.games .stat-value { color: var(--text); }
-.stat-card.wins  .stat-value { color: var(--secondary); }
-.stat-card.acc   .stat-value { color: var(--tertiary); }
-.stat-value sup { font-size: 1.2rem; font-weight: 700; }
-.stat-icon { font-size: 2.5rem; opacity: 0.15; }
+
+.stat-card.games .stat-value {
+    color: var(--text);
+}
+
+.stat-card.wins .stat-value {
+    color: var(--secondary);
+}
+
+.stat-card.acc .stat-value {
+    color: var(--tertiary);
+}
+
+.stat-value sup {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    opacity: 0.15;
+}
 
 /* ── CTA ── */
 .cta-row {
@@ -255,6 +339,7 @@ body {
     margin-bottom: 2.5rem;
     flex-wrap: wrap;
 }
+
 .btn-start {
     display: flex;
     align-items: center;
@@ -273,11 +358,13 @@ body {
     text-decoration: none;
     transition: all 0.2s;
 }
+
 .btn-start:hover {
     background: #00e082;
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(0, 255, 148, 0.3);
 }
+
 .btn-create {
     display: flex;
     align-items: center;
@@ -296,6 +383,7 @@ body {
     text-decoration: none;
     transition: all 0.2s;
 }
+
 .btn-create:hover {
     background: var(--primary);
     transform: translateY(-2px);
@@ -309,6 +397,7 @@ body {
     justify-content: space-between;
     margin-bottom: 1rem;
 }
+
 .section-title {
     font-size: 1.1rem;
     font-weight: 700;
@@ -316,13 +405,16 @@ body {
     align-items: center;
     gap: 0.5rem;
 }
+
 .section-title::before {
     content: '';
     display: inline-block;
-    width: 4px; height: 18px;
+    width: 4px;
+    height: 18px;
     background: var(--primary);
     border-radius: 2px;
 }
+
 .section-link {
     font-size: 0.8rem;
     font-weight: 700;
@@ -332,7 +424,10 @@ body {
     text-decoration: none;
     transition: color 0.2s;
 }
-.section-link:hover { color: var(--secondary); }
+
+.section-link:hover {
+    color: var(--secondary);
+}
 
 /* ── Recent Games grid ── */
 .games-grid {
@@ -340,6 +435,7 @@ body {
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
 }
+
 .game-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
@@ -351,11 +447,13 @@ body {
     color: var(--text);
     display: block;
 }
+
 .game-card:hover {
     border-color: var(--primary);
     transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
 }
+
 .game-thumb {
     height: 130px;
     background: var(--bg-card2);
@@ -366,28 +464,53 @@ body {
     font-size: 3rem;
     overflow: hidden;
 }
+
 .game-badge {
     position: absolute;
-    top: 10px; right: 10px;
+    top: 10px;
+    right: 10px;
     padding: 3px 10px;
     border-radius: 20px;
     font-size: 0.7rem;
     font-weight: 800;
     letter-spacing: 0.05em;
 }
-.badge-xp     { background: var(--secondary); color: #000; }
-.badge-streak { background: var(--tertiary);  color: #fff; }
-.game-body { padding: 1rem; }
-.game-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.25rem; }
+
+.badge-xp {
+    background: var(--secondary);
+    color: #000;
+}
+
+.badge-streak {
+    background: var(--tertiary);
+    color: #fff;
+}
+
+.game-body {
+    padding: 1rem;
+}
+
+.game-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
 .game-meta {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 0.75rem;
 }
-.game-time { font-size: 0.75rem; color: var(--text-dim); }
+
+.game-time {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+}
+
 .game-place {
-    width: 24px; height: 24px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     background: var(--primary);
     color: #fff;
@@ -397,6 +520,7 @@ body {
     align-items: center;
     justify-content: center;
 }
+
 .game-score-bar {
     height: 4px;
     background: var(--bg-card2);
@@ -404,12 +528,18 @@ body {
     overflow: hidden;
     margin-bottom: 0.4rem;
 }
+
 .game-score-fill {
     height: 100%;
     border-radius: 2px;
     background: linear-gradient(90deg, var(--primary), var(--secondary));
 }
-.game-score-text { font-size: 0.75rem; color: var(--text-dim); text-align: right; }
+
+.game-score-text {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    text-align: right;
+}
 
 /* ── Empty state ── */
 .empty-state {
@@ -420,7 +550,10 @@ body {
     text-align: center;
     color: var(--text-muted);
 }
-.empty-state p { margin-bottom: 1.5rem; }
+
+.empty-state p {
+    margin-bottom: 1.5rem;
+}
 
 /* ── Footer ── */
 footer {
@@ -434,12 +567,14 @@ footer {
     margin-left: auto;
     margin-right: auto;
 }
+
 .footer-brand p {
     font-size: 0.75rem;
     color: var(--text-dim);
     margin-top: 0.5rem;
     line-height: 1.6;
 }
+
 .footer-col h4 {
     font-size: 0.7rem;
     font-weight: 700;
@@ -448,6 +583,7 @@ footer {
     color: var(--primary);
     margin-bottom: 0.75rem;
 }
+
 .footer-col a {
     display: block;
     font-size: 0.8rem;
@@ -456,10 +592,20 @@ footer {
     margin-bottom: 0.4rem;
     transition: color 0.2s;
 }
-.footer-col a:hover { color: var(--text); }
-.footer-social { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+
+.footer-col a:hover {
+    color: var(--text);
+}
+
+.footer-social {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
 .social-btn {
-    width: 34px; height: 34px;
+    width: 34px;
+    height: 34px;
     border-radius: 8px;
     background: var(--bg-card2);
     border: 1px solid var(--border);
@@ -471,13 +617,19 @@ footer {
     font-size: 0.9rem;
     transition: all 0.2s;
 }
-.social-btn:hover { border-color: var(--primary); color: var(--text); }
+
+.social-btn:hover {
+    border-color: var(--primary);
+    color: var(--text);
+}
 
 /* ── FAB ── */
 .fab {
     position: fixed;
-    bottom: 2rem; right: 2rem;
-    width: 52px; height: 52px;
+    bottom: 2rem;
+    right: 2rem;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     background: var(--primary);
     color: #fff;
@@ -490,7 +642,11 @@ footer {
     transition: all 0.2s;
     z-index: 50;
 }
-.fab:hover { background: var(--primary-dim); transform: scale(1.1); }
+
+.fab:hover {
+    background: var(--primary-dim);
+    transform: scale(1.1);
+}
 
 /* ── Auth ── */
 .auth-container {
@@ -501,6 +657,7 @@ footer {
     align-items: center;
     justify-content: center;
 }
+
 .auth-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
@@ -509,17 +666,46 @@ footer {
     width: 100%;
     max-width: 440px;
 }
+
 .auth-logo {
     font-size: 1.8rem;
-    font-weight: 800;
+    font-weight: 900;
+    font-style: italic;
     margin-bottom: 0.5rem;
-    color: var(--text);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.05em;
+    background: linear-gradient(135deg, #7e51ff, #b6a0ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    display: inline-block;
 }
-.auth-logo span { color: var(--primary); }
-.auth-subtitle { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 2rem; }
-.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 1rem; }
-label { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.02em; }
+
+.auth-logo span {
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
+.auth-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 1rem;
+}
+
+label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+}
+
 input[type="text"],
 input[type="email"],
 input[type="password"] {
@@ -534,8 +720,16 @@ input[type="password"] {
     outline: none;
     width: 100%;
 }
-input:focus { border-color: var(--primary); }
-.field-error { font-size: 0.75rem; color: var(--tertiary); }
+
+input:focus {
+    border-color: var(--primary);
+}
+
+.field-error {
+    font-size: 0.75rem;
+    color: var(--tertiary);
+}
+
 .alert-error {
     background: rgba(255, 0, 212, 0.1);
     border: 1px solid var(--tertiary);
@@ -545,6 +739,7 @@ input:focus { border-color: var(--primary); }
     font-size: 0.875rem;
     margin-bottom: 1.2rem;
 }
+
 .btn-primary {
     display: inline-flex;
     align-items: center;
@@ -565,29 +760,46 @@ input:focus { border-color: var(--primary); }
     margin-top: 0.75rem;
     letter-spacing: 0.02em;
 }
+
 .btn-primary:hover {
     background: var(--primary-dim);
     box-shadow: 0 8px 24px rgba(124, 77, 255, 0.4);
     transform: translateY(-1px);
 }
+
 .auth-link {
     text-align: center;
     margin-top: 1.5rem;
     font-size: 0.85rem;
     color: var(--text-muted);
 }
-.auth-link a { color: var(--primary); text-decoration: none; font-weight: 600; }
-.auth-link a:hover { color: var(--secondary); }
+
+.auth-link a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-link a:hover {
+    color: var(--secondary);
+}
 
 /* ============================================================
    RESPONSIVE — TABLET (≤ 768px)
    ============================================================ */
 @media (max-width: 768px) {
-    .container { padding: 1.25rem; }
+    .container {
+        padding: 1.25rem;
+    }
 
     /* Navbar — ukryj linki, zostaw logo + avatar */
-    .nav-links { display: none; }
-    .navbar    { padding: 0 1.25rem; }
+    .nav-links {
+        display: none;
+    }
+
+    .navbar {
+        padding: 0 1.25rem;
+    }
 
     /* Hero — jedna kolumna */
     .hero {
@@ -595,46 +807,87 @@ input:focus { border-color: var(--primary); }
         gap: 1.25rem;
         padding: 1.5rem;
     }
-    .hero-xp { text-align: left; }
-    .hero-xp-values { text-align: left; }
+
+    .hero-xp {
+        text-align: left;
+    }
+
+    .hero-xp-values {
+        text-align: left;
+    }
 
     /* Stats — 2 kolumny */
-    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 
     /* Recent games — 2 kolumny */
-    .games-grid { grid-template-columns: repeat(2, 1fr); }
+    .games-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 
     /* Footer — 2 kolumny */
-    footer { grid-template-columns: 1fr 1fr; }
+    footer {
+        grid-template-columns: 1fr 1fr;
+    }
 
     /* CTA buttons — pełna szerokość */
-    .cta-row { flex-direction: column; }
+    .cta-row {
+        flex-direction: column;
+    }
+
     .btn-start,
-    .btn-create { justify-content: center; }
+    .btn-create {
+        justify-content: center;
+    }
 }
 
 /* ============================================================
    RESPONSIVE — MOBILE (≤ 480px)
    ============================================================ */
 @media (max-width: 480px) {
-    .container { padding: 1rem; }
+    .container {
+        padding: 1rem;
+    }
 
     /* Hero — kompaktowy */
-    .hero { padding: 1.25rem; gap: 1rem; }
-    .hero-avatar { width: 60px; height: 60px; font-size: 1.5rem; }
-    .hero-name   { font-size: 1.5rem; }
-    .hero-left   { gap: 1rem; }
+    .hero {
+        padding: 1.25rem;
+        gap: 1rem;
+    }
+
+    .hero-avatar {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+
+    .hero-name {
+        font-size: 1.5rem;
+    }
+
+    .hero-left {
+        gap: 1rem;
+    }
 
     /* Stats — 1 kolumna */
     .stats-grid {
         grid-template-columns: 1fr;
         gap: 0.75rem;
     }
-    .stat-card { padding: 1rem 1.25rem; }
-    .stat-value { font-size: 2rem; }
+
+    .stat-card {
+        padding: 1rem 1.25rem;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+    }
 
     /* Recent games — 1 kolumna */
-    .games-grid { grid-template-columns: 1fr; }
+    .games-grid {
+        grid-template-columns: 1fr;
+    }
 
     /* Footer — 1 kolumna */
     footer {
@@ -644,7 +897,9 @@ input:focus { border-color: var(--primary); }
     }
 
     /* Auth card */
-    .auth-card { padding: 1.75rem 1.25rem; }
+    .auth-card {
+        padding: 1.75rem 1.25rem;
+    }
 }
 
 /* ============================================================
@@ -653,7 +908,9 @@ input:focus { border-color: var(--primary); }
 .mobile-bottom-nav {
     display: none;
     position: fixed;
-    bottom: 0; left: 0; right: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
     background: var(--bg-card);
     border-top: 1px solid var(--border);
     padding: 0.5rem 1rem;
@@ -674,7 +931,8 @@ input:focus { border-color: var(--primary); }
     align-items: center;
     justify-content: center;
     gap: 0.25rem;
-    color: var(--text-muted); /* szare teksty domyslnie */
+    color: var(--text-muted);
+    /* szare teksty domyslnie */
     text-decoration: none;
     font-size: 0.65rem;
     font-weight: 700;
@@ -687,7 +945,8 @@ input:focus { border-color: var(--primary); }
 .bottom-nav-icon {
     font-size: 1.35rem;
     transition: transform 0.2s, filter 0.2s;
-    filter: grayscale(100%) opacity(0.6); /* szare ikonki domyslnie */
+    filter: grayscale(100%) opacity(0.6);
+    /* szare ikonki domyslnie */
 }
 
 .bottom-nav-item:hover {
@@ -695,7 +954,8 @@ input:focus { border-color: var(--primary); }
 }
 
 .bottom-nav-item.active {
-    color: var(--secondary); /* zielone przy kliknieciu/aktywne */
+    color: var(--secondary);
+    /* zielone przy kliknieciu/aktywne */
 }
 
 /* Kiedy element jest aktywny, nadaje kolory ikonie */
@@ -709,12 +969,13 @@ input:focus { border-color: var(--primary); }
     .mobile-bottom-nav {
         display: block;
     }
-    
+
     .fab {
-        bottom: 80px; /* Podniesiony nad navbar */
+        bottom: 80px;
+        /* Podniesiony nad navbar */
     }
 
     body {
-        padding-bottom: 75px; 
+        padding-bottom: 75px;
     }
 }

@@ -89,13 +89,13 @@ $level = fn($xp) => max(1, (int) floor($xp / 200) + 1);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leaderboard — QuizArena</title>
-    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/main.css?v=2">
     <link rel="stylesheet" href="/assets/css/leaderboard.css">
 </head>
 <body>
 
 <nav class="navbar">
-    <a href="/dashboard.php" class="nav-logo">Quiz<span>Arena</span></a>
+    <a href="/dashboard.php" class="nav-logo">QuizArena</a>
     <div class="nav-links">
         <a href="/dashboard.php">Dashboard</a>
         <a href="/quiz/create.php">Create Quiz</a>

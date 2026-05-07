@@ -71,7 +71,7 @@ $trophy = match(true) {
     <title>Results — QuizArena</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/main.css?v=2">
     <link rel="stylesheet" href="/assets/css/results.css">
 </head>
 <body>
@@ -82,7 +82,7 @@ $trophy = match(true) {
 </div>
 
 <nav class="navbar">
-    <a href="/dashboard.php" class="nav-logo">Quiz<span>Arena</span></a>
+    <a href="/dashboard.php" class="nav-logo">QuizArena</a>
     <div class="nav-links">
         <a href="/dashboard.php">Dashboard</a>
         <a href="/quiz/browse.php">Browse</a>

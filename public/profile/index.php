@@ -150,13 +150,13 @@ $catIcon   = [
     <title><?= htmlspecialchars($profile['username']) ?> — QuizArena</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/main.css?v=2">
     <link rel="stylesheet" href="/assets/css/profile.css">
 </head>
 <body>
 
 <nav class="navbar">
-    <a href="/dashboard.php" class="nav-logo">Quiz<span>Arena</span></a>
+    <a href="/dashboard.php" class="nav-logo">QuizArena</a>
     <div class="nav-links">
         <a href="/dashboard.php">Dashboard</a>
         <a href="/quiz/create.php">Create Quiz</a>
