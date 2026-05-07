@@ -110,12 +110,12 @@ $categoryIcon    = [
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard — QuizArena</title>
-    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/main.css?v=2">
 </head>
 <body>
 
 <nav class="navbar">
-    <a href="/dashboard.php" class="nav-logo">Quiz<span>Arena</span></a>
+    <a href="/dashboard.php" class="nav-logo">QuizArena</a>
     <div class="nav-links">
         <a href="/dashboard.php" class="active">Dashboard</a>
         <a href="/quiz/create.php">Create Quiz</a>
@@ -247,7 +247,7 @@ $categoryIcon    = [
 <!-- Footer -->
 <footer>
     <div class="footer-brand">
-        <div class="auth-logo" style="font-size:1.1rem">Quiz<span style="color:var(--primary)">Arena</span></div>
+        <div class="auth-logo" style="font-size:1.1rem">QuizArena</div>
         <p>© 2026 QuizArena.<br>The Neon Arena Awaits.</p>
     </div>
     <div class="footer-col">
