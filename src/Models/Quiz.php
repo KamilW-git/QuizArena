@@ -28,7 +28,23 @@ class Quiz
             'difficulty' => $difficulty,
         ]);
 
-        return $stmt->fetch();
+        $quiz = $stmt->fetch();
+
+        // Powiadom wszystkich innych użytkowników o nowym quizie
+        $stmt = $this->db->prepare('
+            INSERT INTO notifications (user_id, title, message, type)
+            SELECT id, :title, :message, :type
+            FROM users
+            WHERE id != :creator_id
+        ');
+        $stmt->execute([
+            'title'      => 'Nowy quiz!',
+            'message'    => "Nowy quiz \"$title\" w kategorii $category został dodany!",
+            'type'       => 'new_quiz',
+            'creator_id' => $userId
+        ]);
+
+        return $quiz;
     }
 
     // Pobierz wszystkie publiczne quizy

@@ -346,6 +346,38 @@
     letter-spacing: 0.05em;
 }
 
+/* ── Pagination ── */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+}
+.page-link {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-muted) !important;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-decoration: none !important;
+    transition: all 0.2s;
+}
+.page-link:hover {
+    border-color: var(--primary);
+    color: var(--text) !important;
+    background: var(--bg-card2);
+}
+.page-link.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff !important;
+    pointer-events: none;
+}
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
     .quiz-grid { grid-template-columns: repeat(2, 1fr); }

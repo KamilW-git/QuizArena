@@ -72,7 +72,7 @@ $trophy = match(true) {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/main.css?v=2">
-    <link rel="stylesheet" href="/assets/css/results.css">
+    <link rel="stylesheet" href="/assets/css/results.css?v=3">
 </head>
 <body>
 
@@ -91,7 +91,6 @@ $trophy = match(true) {
     <div class="nav-right">
         <a href="/profile/index.php" class="nav-avatar">
             <?= strtoupper(substr($user['username'], 0, 2)) ?>
-            <span class="nav-level">LVL <?= max(1, floor($user['xp'] / 200) + 1) ?></span>
         </a>
     </div>
 </nav>
@@ -135,6 +134,19 @@ $trophy = match(true) {
     <div class="xp-banner">
         <span class="xp-banner__label">XP EARNED</span>
         <span class="xp-banner__value">+<?= $session['score'] ?> XP</span>
+    </div>
+
+    <!-- ── Rating Widget ── -->
+    <div class="rating-widget" id="rating-widget">
+        <h3 class="rating-widget__title">Rate this quiz</h3>
+        <div class="rating-stars" id="rating-stars">
+            <span class="star" data-val="1">★</span>
+            <span class="star" data-val="2">★</span>
+            <span class="star" data-val="3">★</span>
+            <span class="star" data-val="4">★</span>
+            <span class="star" data-val="5">★</span>
+        </div>
+        <p class="rating-msg" id="rating-msg"></p>
     </div>
 
     <!-- ── Answer breakdown ── -->
@@ -200,6 +212,59 @@ $trophy = match(true) {
     }
     requestAnimationFrame(step);
 })();
+
+// Star Rating Logic
+document.addEventListener('DOMContentLoaded', () => {
+    const stars = document.querySelectorAll('#rating-stars .star');
+    const msgEl = document.getElementById('rating-msg');
+    let currentRating = 0;
+
+    stars.forEach(star => {
+        star.addEventListener('mouseover', function() {
+            if (currentRating > 0) return; // if already voted, don't hover effect
+            const val = this.dataset.val;
+            stars.forEach(s => s.classList.toggle('hover', s.dataset.val <= val));
+        });
+
+        star.addEventListener('mouseout', function() {
+            if (currentRating > 0) return;
+            stars.forEach(s => s.classList.remove('hover'));
+        });
+
+        star.addEventListener('click', async function() {
+            const val = this.dataset.val;
+            currentRating = val;
+            
+            // Set active class
+            stars.forEach(s => {
+                s.classList.remove('hover');
+                s.classList.toggle('active', s.dataset.val <= val);
+            });
+
+            // Send to server
+            try {
+                const res = await fetch('/api/quiz/rate.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        quiz_id: <?= json_encode($session['quiz_id']) ?>,
+                        rating: val
+                    })
+                });
+                
+                if (res.ok) {
+                    msgEl.textContent = 'Thank you for your rating! 🌟';
+                    msgEl.style.color = 'var(--secondary)';
+                } else {
+                    msgEl.textContent = 'Failed to save rating.';
+                    msgEl.style.color = 'var(--tertiary)';
+                }
+            } catch (err) {
+                msgEl.textContent = 'Network error.';
+            }
+        });
+    });
+});
 </script>
 </body>
 </html>
