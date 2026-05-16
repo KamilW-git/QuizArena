@@ -62,4 +62,24 @@ class Auth
             exit;
         }
     }
+
+    // Wygeneruj token CSRF
+    public static function generateCsrfToken(): string
+    {
+        self::start();
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+        return $_SESSION['csrf_token'];
+    }
+
+    // Sprawdź token CSRF
+    public static function validateCsrfToken(?string $token): bool
+    {
+        self::start();
+        if (empty($_SESSION['csrf_token']) || empty($token)) {
+            return false;
+        }
+        return hash_equals($_SESSION['csrf_token'], $token);
+    }
 }

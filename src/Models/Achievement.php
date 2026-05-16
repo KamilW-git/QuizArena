@@ -31,24 +31,41 @@ class Achievement
         $alreadyUnlocked = $stmt->fetchAll(PDO::FETCH_COLUMN);
         $alreadyUnlocked = array_flip($alreadyUnlocked); // dla szybkiego isset()
 
-        // Pobierz statystyki gracza potrzebne do warunków
-        $stmt = $this->db->prepare('
+        // Pobierz statystyki gracza potrzebne do warunków, bez podzapytań w funkcjach agregujących (błąd w PostgreSQL)
+        $stmtStats = $this->db->prepare('
             SELECT
-                COUNT(DISTINCT gs.id)                               AS games_played,
-                COALESCE(MAX(
-                    CASE WHEN gs.correct_count = (
-                        SELECT COUNT(*) FROM game_answers ga WHERE ga.session_id = gs.id
-                    ) AND gs.correct_count > 0 THEN 1 ELSE 0 END
-                ), 0)                                               AS has_perfect,
-                COUNT(DISTINCT q.id)                                AS quizzes_created,
-                COUNT(DISTINCT DATE(gs.completed_at))               AS distinct_days
-            FROM users u
-            LEFT JOIN game_sessions gs ON gs.user_id = u.id
-            LEFT JOIN quizzes q        ON q.user_id  = u.id
-            WHERE u.id = :uid
+                COUNT(id) AS games_played,
+                COUNT(DISTINCT DATE(completed_at)) AS distinct_days
+            FROM game_sessions
+            WHERE user_id = :uid
         ');
-        $stmt->execute(['uid' => $userId]);
-        $s = $stmt->fetch();
+        $stmtStats->execute(['uid' => $userId]);
+        $s1 = $stmtStats->fetch();
+
+        $stmtQuizzes = $this->db->prepare('
+            SELECT COUNT(id) AS quizzes_created
+            FROM quizzes
+            WHERE user_id = :uid
+        ');
+        $stmtQuizzes->execute(['uid' => $userId]);
+        $s2 = $stmtQuizzes->fetch();
+
+        $stmtPerf = $this->db->prepare('
+            SELECT 1 FROM game_sessions gs
+            WHERE gs.user_id = :uid
+              AND gs.correct_count > 0
+              AND gs.correct_count = (SELECT COUNT(*) FROM questions q WHERE q.quiz_id = gs.quiz_id)
+            LIMIT 1
+        ');
+        $stmtPerf->execute(['uid' => $userId]);
+        $hasPerfect = $stmtPerf->fetchColumn() ? 1 : 0;
+
+        $s = [
+            'games_played'    => $s1['games_played'] ?? 0,
+            'distinct_days'   => $s1['distinct_days'] ?? 0,
+            'quizzes_created' => $s2['quizzes_created'] ?? 0,
+            'has_perfect'     => $hasPerfect
+        ];
 
         // Definicje warunków — klucz => callable zwracające bool albo prosty bool
         $conditions = [

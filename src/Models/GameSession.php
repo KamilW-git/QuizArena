@@ -95,6 +95,18 @@ class GameSession
         $xpEarned = $baseXp + $speedXp;
         $score    = $baseXp; // score = punkty bez bonusu za szybkość
 
+        // Pobierz user_id tej sesji
+        $stmt = $this->db->prepare('SELECT user_id FROM game_sessions WHERE id = :id');
+        $stmt->execute(['id' => $sessionId]);
+        $userId = $stmt->fetchColumn();
+
+        // Pobierz XP przed aktualizacją
+        $stmt = $this->db->prepare('SELECT xp FROM users WHERE id = :user_id');
+        $stmt->execute(['user_id' => $userId]);
+        $oldXp = (int) $stmt->fetchColumn();
+        $oldLevel = max(1, (int) floor($oldXp / 1000) + 1);
+        $newLevel = max(1, (int) floor(($oldXp + $xpEarned) / 1000) + 1);
+
         // Zaktualizuj sesję
         $stmt = $this->db->prepare('
             UPDATE game_sessions
@@ -124,10 +136,19 @@ class GameSession
             'session_id' => $sessionId,
         ]);
 
-        // Pobierz user_id tej sesji
-        $stmt = $this->db->prepare('SELECT user_id FROM game_sessions WHERE id = :id');
-        $stmt->execute(['id' => $sessionId]);
-        $userId = $stmt->fetchColumn();
+        // Wyślij powiadomienie o Level Up
+        if ($newLevel > $oldLevel) {
+            $stmt = $this->db->prepare('
+                INSERT INTO notifications (user_id, title, message, type)
+                VALUES (:user_id, :title, :message, :type)
+            ');
+            $stmt->execute([
+                'user_id' => $userId,
+                'title'   => 'Level Up! 🎉',
+                'message' => "Gratulacje! Wbiłeś $newLevel poziom!",
+                'type'    => 'level_up'
+            ]);
+        }
 
          // Sprawdź i przyznaj achievementy
         $achievement = new Achievement($this->db);

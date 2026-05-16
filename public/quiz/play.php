@@ -34,7 +34,7 @@ $user = Auth::user();
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/main.css">
-    <link rel="stylesheet" href="/assets/css/play.css">
+    <link rel="stylesheet" href="/assets/css/play.css?v=4">
 </head>
 <body>
 
@@ -45,8 +45,20 @@ $user = Auth::user();
 
 <main class="game-wrap">
 
+    <!-- EXIT BUTTON (widoczny tylko podczas gry) -->
+    <button class="exit-game-btn is-hidden" id="btn-exit-game" aria-label="Exit Game">✕</button>
+
+    <!-- INTRO -->
+    <div class="game-state" id="state-intro">
+        <div class="intro-card">
+            <h1 class="intro-card__title"><?= htmlspecialchars($quiz['title']) ?></h1>
+            <p class="intro-card__sub">Ready for the challenge? You have limited time for each question.</p>
+            <button class="btn-primary intro-card__btn" id="btn-start-game">Start Quiz</button>
+        </div>
+    </div>
+
     <!-- LOADING -->
-    <div class="game-state" id="state-loading">
+    <div class="game-state is-hidden" id="state-loading">
         <div class="loader">
             <div class="loader__ring"></div>
             <p class="loader__text">Loading quiz...</p>
@@ -120,11 +132,26 @@ $user = Auth::user();
 
 </main>
 
+<!-- EXIT MODAL -->
+<div class="modal-overlay is-hidden" id="exit-modal">
+    <div class="modal-card">
+        <div class="modal-card__icon">⚠️</div>
+        <h3 class="modal-card__title">Are you sure you want to exit?</h3>
+        <p class="modal-card__text">
+            Your current score will be saved, but <strong>all remaining questions</strong> will be marked as unanswered (0 points). 
+        </p>
+        <div class="modal-card__actions">
+            <button class="btn-secondary" id="btn-modal-cancel">Return to Game</button>
+            <button class="btn-danger" id="btn-modal-confirm">Exit & Calculate Score</button>
+        </div>
+    </div>
+</div>
+
 <script>
     window.QUIZ_ID    = <?= json_encode($quizId) ?>;
     window.USER_ID    = <?= (int) $user['id'] ?>;
     window.QUIZ_TITLE = <?= json_encode($quiz['title']) ?>;
 </script>
-<script src="/assets/js/game.js"></script>
+<script src="/assets/js/game.js?v=3"></script>
 </body>
 </html>

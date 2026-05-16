@@ -513,3 +513,197 @@
         text-align: right;
     }
 }
+
+/* ============================================================
+   NOWE ELEMENTY (Intro, Exit, Modal)
+   ============================================================ */
+
+/* ── Exit Game Button ── */
+.exit-game-btn {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 50;
+    transition: all 0.2s;
+}
+.exit-game-btn:hover {
+    background: rgba(255, 77, 77, 0.1);
+    color: #ff4d4d;
+    border-color: #ff4d4d;
+    transform: scale(1.05);
+}
+.exit-game-btn.is-hidden {
+    display: none;
+}
+
+@media (max-width: 640px) {
+    .exit-game-btn {
+        top: 1rem;
+        right: 1rem;
+    }
+}
+
+/* ── Intro Card ── */
+.intro-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3rem 2.5rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+.intro-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+}
+.intro-card__title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--text);
+    margin: 0;
+    line-height: 1.2;
+}
+.intro-card__sub {
+    color: var(--text-muted);
+    font-size: 1rem;
+    max-width: 400px;
+    margin: 0 auto;
+}
+.intro-card__btn {
+    margin-top: 1rem;
+    font-size: 1.1rem;
+    padding: 1rem 3rem;
+    border-radius: 50px;
+    box-shadow: 0 0 20px rgba(124, 77, 255, 0.3);
+}
+
+/* ── Exit Modal ── */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(13, 14, 18, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 1.25rem;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+.modal-overlay.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2.5rem;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    transform: translateY(0) scale(1);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+.modal-overlay.is-hidden .modal-card {
+    transform: translateY(20px) scale(0.95);
+}
+
+.modal-card__icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+.modal-card__title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+}
+.modal-card__text {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 2rem;
+}
+.modal-card__text strong {
+    color: #ff4d4d;
+}
+.modal-card__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+.btn-danger {
+    background: transparent;
+    color: #ff4d4d;
+    border: 1px solid rgba(255, 77, 77, 0.3);
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    font-size: 1rem;
+}
+.btn-danger:hover {
+    background: rgba(255, 77, 77, 0.1);
+    border-color: #ff4d4d;
+}
+
+/* Base button styles to ensure consistency with main app */
+.btn-primary {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    border-radius: 10px;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+}
+.btn-primary:hover {
+    background: color-mix(in srgb, var(--primary) 80%, #fff);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: var(--bg-card2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    font-size: 1rem;
+}
+.btn-secondary:hover {
+    background: color-mix(in srgb, var(--bg-card2) 80%, #fff);
+    border-color: var(--primary);
+}

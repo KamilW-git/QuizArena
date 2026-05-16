@@ -15,35 +15,39 @@ $user   = Auth::user();
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $db         = Database::connect();
-    $controller = new QuizController($db);
+    if (!Auth::validateCsrfToken($_POST['csrf_token'] ?? '')) {
+        $errors['general'] = 'Nieprawidłowy token zabezpieczający. Spróbuj ponownie.';
+    } else {
+        $db         = Database::connect();
+        $controller = new QuizController($db);
 
-    $data = [
-        'title'      => $_POST['title'] ?? '',
-        'category'   => $_POST['category'] ?? '',
-        'difficulty' => $_POST['difficulty'] ?? 1,
-        'questions'  => [],
-    ];
-
-    // Zbierz pytania z POST
-    $rawQuestions = $_POST['questions'] ?? [];
-    foreach ($rawQuestions as $q) {
-        $data['questions'][] = [
-            'content'        => $q['content'] ?? '',
-            'correct_answer' => (int) ($q['correct_answer'] ?? 0),
-            'time_limit'     => (int) ($q['time_limit'] ?? 30),
-            'answers'        => $q['answers'] ?? ['', '', '', ''],
+        $data = [
+            'title'      => $_POST['title'] ?? '',
+            'category'   => $_POST['category'] ?? '',
+            'difficulty' => $_POST['difficulty'] ?? 1,
+            'questions'  => [],
         ];
+
+        // Zbierz pytania z POST
+        $rawQuestions = $_POST['questions'] ?? [];
+        foreach ($rawQuestions as $q) {
+            $data['questions'][] = [
+                'content'        => $q['content'] ?? '',
+                'correct_answer' => (int) ($q['correct_answer'] ?? 0),
+                'time_limit'     => (int) ($q['time_limit'] ?? 30),
+                'answers'        => $q['answers'] ?? ['', '', '', ''],
+            ];
+        }
+
+        $result = $controller->create($user['id'], $data);
+
+        if ($result['success']) {
+            header('Location: /quiz/browse.php?created=1');
+            exit;
+        }
+
+        $errors = $result['errors'];
     }
-
-    $result = $controller->create($user['id'], $data);
-
-    if ($result['success']) {
-        header('Location: /quiz/browse.php?created=1');
-        exit;
-    }
-
-    $errors = $result['errors'];
 }
 ?>
 <!DOCTYPE html>
@@ -68,7 +72,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <a href="#" class="nav-bell">🔔</a>
         <a href="/profile/index.php" class="nav-avatar">
             <?= strtoupper(substr($user['username'], 0, 2)) ?>
-            <span class="nav-level">LVL <?= max(1, floor($user['xp'] / 200) + 1) ?></span>
         </a>
     </div>
 </nav>
@@ -84,6 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endif; ?>
 
     <form method="POST" id="quiz-form">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Auth::generateCsrfToken()) ?>">
 
         <!-- Quiz info -->
         <div class="form-card">

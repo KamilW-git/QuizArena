@@ -8,6 +8,7 @@ const TIMER_CIRCUMFERENCE = 2 * Math.PI * 80; // r=80, SVG viewBox 180x180
 const LETTERS = ['A', 'B', 'C', 'D'];
 
 const states = {
+    intro:    document.getElementById('state-intro'),
     loading:  document.getElementById('state-loading'),
     playing:  document.getElementById('state-playing'),
     finished: document.getElementById('state-finished'),
@@ -35,6 +36,7 @@ let timerHandle   = null;
 let secondsLeft   = 0;
 let questionStart = null;
 let answerLocked  = false;
+let gameInProgress = false;
 
 function showState(name) {
     Object.entries(states).forEach(([key, el]) => {
@@ -55,7 +57,76 @@ async function post(url, body) {
     return res.json();
 }
 
-document.addEventListener('DOMContentLoaded', startGame);
+document.addEventListener('DOMContentLoaded', initGame);
+
+function initGame() {
+    const startBtn = document.getElementById('btn-start-game');
+    if (startBtn) {
+        showState('intro');
+        startBtn.addEventListener('click', startGame);
+    } else {
+        startGame();
+    }
+
+    // Listener na manualny X oraz modal
+    document.getElementById('btn-exit-game')?.addEventListener('click', showExitModal);
+    document.getElementById('btn-modal-cancel')?.addEventListener('click', hideExitModal);
+    document.getElementById('btn-modal-confirm')?.addEventListener('click', abortGame);
+
+    // Zabezpieczenie paska adresu / wstecz
+    window.addEventListener('popstate', handlePopState);
+    window.addEventListener('beforeunload', handleBeforeUnload);
+}
+
+function showExitModal() {
+    if (!gameInProgress) return;
+    const modal = document.getElementById('exit-modal');
+    if (modal) modal.classList.remove('is-hidden');
+}
+
+function hideExitModal() {
+    const modal = document.getElementById('exit-modal');
+    if (modal) modal.classList.add('is-hidden');
+}
+
+function handlePopState(e) {
+    if (gameInProgress) {
+        showExitModal();
+        history.pushState(null, '', location.href); // zablokuj wstecz
+    }
+}
+
+function handleBeforeUnload(e) {
+    if (gameInProgress) {
+        e.preventDefault();
+        e.returnValue = ''; // Wymuszone przez nowoczesne przeglądarki
+    }
+}
+
+async function abortGame() {
+    gameInProgress = false;
+    hideExitModal();
+    showState('finished');
+    stopTimer();
+    disableAllAnswers();
+
+    // Wypełnij resztę pytań jako timeout (-1), aby uzyskały 0 pkt
+    if (questions && questions.length > 0) {
+        for (let i = currentIdx; i < questions.length; i++) {
+            try {
+                await post('/api/game/answer.php', {
+                    session_id: sessionId,
+                    question_id: questions[i].id,
+                    chosen_index: -1,
+                    time_spent_ms: 0
+                });
+            } catch (err) {
+                console.error('Abort save failed:', err);
+            }
+        }
+    }
+    await finishGame();
+}
 
 async function startGame() {
     showState('loading');
@@ -71,6 +142,12 @@ async function startGame() {
     if (!questions.length) { showError('This quiz has no questions yet.'); return; }
     ui.qTotal.textContent = questions.length;
     if (ui.footerTotal) ui.footerTotal.textContent = questions.length;
+    
+    // Ustawiamy flagę i wgrywamy pierwszy stan historii, by popstate mógł zadziałać w tył
+    gameInProgress = true;
+    history.pushState(null, '', location.href);
+    document.getElementById('btn-exit-game')?.classList.remove('is-hidden');
+    
     showState('playing');
     renderQuestion(0);
 }
@@ -188,6 +265,9 @@ function updateScore(newScore) {
 }
 
 async function finishGame() {
+    gameInProgress = false;
+    document.getElementById('btn-exit-game')?.classList.add('is-hidden');
+    
     ui.progressFill.style.width = '100%';
     showState('finished');
     try {

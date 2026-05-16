@@ -33,6 +33,18 @@ CREATE TABLE quizzes (
 );
 
 -- ============================================
+-- 2a. QUIZ RATINGS
+-- ============================================
+CREATE TABLE quiz_ratings (
+    id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id    UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    quiz_id    UUID NOT NULL REFERENCES quizzes(id) ON DELETE CASCADE,
+    rating     SMALLINT NOT NULL CHECK (rating BETWEEN 1 AND 5),
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    UNIQUE(user_id, quiz_id)
+);
+
+-- ============================================
 -- 3. QUESTIONS
 -- ============================================
 CREATE TABLE questions (
@@ -98,6 +110,19 @@ CREATE TABLE user_achievements (
     achievement_id UUID      NOT NULL REFERENCES achievements(id) ON DELETE CASCADE,
     unlocked_at    TIMESTAMP NOT NULL DEFAULT NOW(),
     PRIMARY KEY (user_id, achievement_id)
+);
+
+-- ============================================
+-- 9. NOTIFICATIONS
+-- ============================================
+CREATE TABLE notifications (
+    id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id    UUID         NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    title      VARCHAR(100) NOT NULL,
+    message    TEXT         NOT NULL,
+    type       VARCHAR(50)  NOT NULL DEFAULT 'system',
+    is_read    BOOLEAN      NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP    NOT NULL DEFAULT NOW()
 );
 
 -- ============================================
