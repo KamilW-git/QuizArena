@@ -89,8 +89,8 @@ $trophy = match(true) {
         <a href="/quiz/create.php">Create Quiz</a>
     </div>
     <div class="nav-right">
-        <a href="/profile/index.php" class="nav-avatar">
-            <?= strtoupper(substr($user['username'], 0, 2)) ?>
+        <a href="/profile/index.php" class="nav-avatar" style="overflow: hidden;">
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=<?= urlencode($user['username']) ?>" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
         </a>
     </div>
 </nav>

@@ -105,8 +105,8 @@ $level = fn($xp) => max(1, (int) floor($xp / 1000) + 1);
     </div>
     <div class="nav-right">
         <a href="#" class="nav-bell">🔔</a>
-        <a href="/profile/index.php" class="nav-avatar">
-            <?= strtoupper(substr($user['username'], 0, 2)) ?>
+        <a href="/profile/index.php" class="nav-avatar" style="overflow: hidden;">
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=<?= urlencode($user['username']) ?>" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
         </a>
     </div>
 </nav>
@@ -137,8 +137,8 @@ $level = fn($xp) => max(1, (int) floor($xp / 1000) + 1);
         <div class="podium">
             <!-- 2nd place -->
             <div class="podium-slot podium-slot--2">
-                <div class="podium-avatar">
-                    <?= strtoupper(substr($leaders[1]['username'], 0, 2)) ?>
+                <div class="podium-avatar" style="overflow: hidden;">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=<?= urlencode($leaders[1]['username']) ?>" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
                 <div class="podium-name"><?= htmlspecialchars($leaders[1]['username']) ?></div>
                 <div class="podium-score"><?= number_format($leaders[1]['total_score']) ?></div>
@@ -148,8 +148,8 @@ $level = fn($xp) => max(1, (int) floor($xp / 1000) + 1);
             <!-- 1st place -->
             <div class="podium-slot podium-slot--1">
                 <div class="podium-crown">👑</div>
-                <div class="podium-avatar podium-avatar--1">
-                    <?= strtoupper(substr($leaders[0]['username'], 0, 2)) ?>
+                <div class="podium-avatar podium-avatar--1" style="overflow: hidden;">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=<?= urlencode($leaders[0]['username']) ?>" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
                 <div class="podium-name"><?= htmlspecialchars($leaders[0]['username']) ?></div>
                 <div class="podium-score"><?= number_format($leaders[0]['total_score']) ?></div>
@@ -158,8 +158,8 @@ $level = fn($xp) => max(1, (int) floor($xp / 1000) + 1);
 
             <!-- 3rd place -->
             <div class="podium-slot podium-slot--3">
-                <div class="podium-avatar">
-                    <?= strtoupper(substr($leaders[2]['username'], 0, 2)) ?>
+                <div class="podium-avatar" style="overflow: hidden;">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=<?= urlencode($leaders[2]['username']) ?>" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
                 <div class="podium-name"><?= htmlspecialchars($leaders[2]['username']) ?></div>
                 <div class="podium-score"><?= number_format($leaders[2]['total_score']) ?></div>
@@ -203,8 +203,8 @@ $level = fn($xp) => max(1, (int) floor($xp / 1000) + 1);
                     </span>
 
                     <span class="lb-col-player">
-                        <span class="lb-avatar" style="<?= $isMe ? 'background: linear-gradient(135deg, var(--primary), var(--secondary))' : '' ?>">
-                            <?= strtoupper(substr($row['username'], 0, 2)) ?>
+                        <span class="lb-avatar" style="overflow: hidden; <?= $isMe ? 'background: linear-gradient(135deg, var(--primary), var(--secondary))' : '' ?>">
+                            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=<?= urlencode($row['username']) ?>" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
                         </span>
                         <span class="lb-player-info">
                             <span class="lb-username">

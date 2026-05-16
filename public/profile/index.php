@@ -166,8 +166,8 @@ $catIcon   = [
     </div>
     <div class="nav-right">
         <a href="#" class="nav-bell">🔔</a>
-        <a href="/profile/index.php" class="nav-avatar">
-            <?= strtoupper(substr($sessionUser['username'], 0, 2)) ?>
+        <a href="/profile/index.php" class="nav-avatar" style="overflow: hidden;">
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=<?= urlencode($sessionUser['username']) ?>" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
         </a>
     </div>
 </nav>
@@ -177,8 +177,8 @@ $catIcon   = [
     <!-- ── Profile header ── -->
     <div class="profile-header">
         <div class="profile-avatar-wrap">
-            <div class="profile-avatar">
-                <?= $initials ?>
+            <div class="profile-avatar" style="overflow: hidden;">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=<?= urlencode($profile['username']) ?>" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
             </div>
             <div class="profile-level-badge">LVL <?= $level ?></div>
         </div>

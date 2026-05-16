@@ -123,8 +123,8 @@ $categoryIcon    = [
     </div>
     <div class="nav-right">
         <a href="#" class="nav-bell">🔔</a>
-        <a href="/profile/index.php" class="nav-avatar">
-            <?= strtoupper(substr($user['username'], 0, 2)) ?>
+        <a href="/profile/index.php" class="nav-avatar" style="overflow: hidden;">
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=<?= urlencode($user['username']) ?>" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
         </a>
     </div>
 </nav>
@@ -134,7 +134,9 @@ $categoryIcon    = [
     <!-- ── Hero ── -->
     <div class="hero">
         <div class="hero-left">
-            <div class="hero-avatar">🎮</div>
+            <div class="hero-avatar" style="overflow: hidden;">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=<?= urlencode($user['username']) ?>" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
             <div>
                 <div class="hero-greeting">Welcome back,</div>
                 <div class="hero-name"><?= htmlspecialchars($user['username']) ?></div>
