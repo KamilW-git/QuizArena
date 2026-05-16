@@ -141,9 +141,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div id="questions-list"></div>
 
-            <button type="button" id="add-question" class="btn-add-question">
-                + Add Question
-            </button>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+                <button type="button" id="add-question" class="btn-add-question">
+                    + Add Question
+                </button>
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <select id="auto-generate-amount" style="padding: 0.8rem 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-weight: 600;">
+                        <option value="5">5 Questions</option>
+                        <option value="10" selected>10 Questions</option>
+                        <option value="15">15 Questions</option>
+                        <option value="20">20 Questions</option>
+                    </select>
+                    <button type="button" id="auto-generate" class="btn-add-question" style="background: var(--bg-card2); border-color: var(--primary); color: var(--primary);">
+                        🤖 Auto-Generate (OpenTDB)
+                    </button>
+                </div>
+            </div>
         </div>
 
         <div class="form-actions">
@@ -154,6 +167,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </form>
 </div>
 
-<script src="/assets/js/quiz-creator.js"></script>
+<script>
+    const preloadedQuestions = <?= json_encode($_POST['questions'] ?? null) ?>;
+</script>
+<script src="/assets/js/quiz-creator.js?v=<?= time() ?>"></script>
 </body>
 </html>
