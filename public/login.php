@@ -14,16 +14,20 @@ Auth::guest();
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $db         = Database::connect();
-    $controller = new AuthController($db);
-    $result     = $controller->login($_POST);
+    if (!Auth::validateCsrfToken($_POST['csrf_token'] ?? '')) {
+        $errors['general'] = 'Nieprawidłowy token zabezpieczający. Spróbuj ponownie.';
+    } else {
+        $db         = Database::connect();
+        $controller = new AuthController($db);
+        $result     = $controller->login($_POST);
 
-    if ($result['success']) {
-        header('Location: /dashboard.php');
-        exit;
+        if ($result['success']) {
+            header('Location: /dashboard.php');
+            exit;
+        }
+
+        $errors = $result['errors'];
     }
-
-    $errors = $result['errors'];
 }
 ?>
 <!DOCTYPE html>
@@ -45,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endif; ?>
 
             <form method="POST">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Auth::generateCsrfToken()) ?>">
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input

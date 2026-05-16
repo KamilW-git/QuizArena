@@ -36,11 +36,13 @@ $stmt = $db->prepare("
         COALESCE(AVG(gs.correct_count), 0)              AS avg_correct,
         COALESCE(
             SUM(gs.correct_count)::float /
-            NULLIF(COUNT(ga.id), 0) * 100
+            NULLIF(SUM(qc.q_count), 0) * 100
         , 0)                                            AS accuracy
     FROM users u
     JOIN game_sessions gs ON gs.user_id = u.id
-    LEFT JOIN game_answers ga ON ga.session_id = gs.id
+    LEFT JOIN (
+        SELECT quiz_id, COUNT(id) AS q_count FROM questions GROUP BY quiz_id
+    ) qc ON qc.quiz_id = gs.quiz_id
     $whereClause
     GROUP BY u.id, u.username, u.xp
     HAVING COUNT(DISTINCT gs.id) > 0
@@ -81,7 +83,7 @@ if ($myRank === null) {
 }
 
 $medal = ['🥇', '🥈', '🥉'];
-$level = fn($xp) => max(1, (int) floor($xp / 200) + 1);
+$level = fn($xp) => max(1, (int) floor($xp / 1000) + 1);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -90,7 +92,7 @@ $level = fn($xp) => max(1, (int) floor($xp / 200) + 1);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leaderboard — QuizArena</title>
     <link rel="stylesheet" href="/assets/css/main.css?v=2">
-    <link rel="stylesheet" href="/assets/css/leaderboard.css">
+    <link rel="stylesheet" href="/assets/css/leaderboard.css?v=2">
 </head>
 <body>
 
@@ -105,7 +107,6 @@ $level = fn($xp) => max(1, (int) floor($xp / 200) + 1);
         <a href="#" class="nav-bell">🔔</a>
         <a href="/profile/index.php" class="nav-avatar">
             <?= strtoupper(substr($user['username'], 0, 2)) ?>
-            <span class="nav-level">LVL <?= $level($user['xp'] ?? 0) ?></span>
         </a>
     </div>
 </nav>
@@ -182,6 +183,15 @@ $level = fn($xp) => max(1, (int) floor($xp / 200) + 1);
                 $isMe     = $row['id'] === $user['id'];
                 $rowAcc   = (int) round((float) $row['accuracy']);
                 $rowLevel = $level((int) $row['xp']);
+
+                // Dynamiczny kolor accuracy
+                if ($rowAcc >= 80) {
+                    $accColor = 'var(--secondary)'; // Zielony
+                } elseif ($rowAcc >= 50) {
+                    $accColor = '#ffb800'; // Żółty
+                } else {
+                    $accColor = '#ff4d4d'; // Czerwony
+                }
             ?>
                 <div class="lb-row <?= $isMe ? 'lb-row--me' : '' ?> <?= $rank <= 3 ? 'lb-row--top' : '' ?>">
                     <span class="lb-col-rank">
@@ -215,9 +225,9 @@ $level = fn($xp) => max(1, (int) floor($xp / 200) + 1);
 
                     <span class="lb-col-acc">
                         <span class="lb-acc-bar">
-                            <span class="lb-acc-fill" style="width: <?= $rowAcc ?>%"></span>
+                            <span class="lb-acc-fill" style="width: <?= $rowAcc ?>%; background: <?= $accColor ?>; box-shadow: 0 0 10px <?= $accColor ?>;"></span>
                         </span>
-                        <span class="lb-acc-val"><?= $rowAcc ?>%</span>
+                        <span class="lb-acc-val" style="color: <?= $accColor ?>; font-weight: 700;"><?= $rowAcc ?>%</span>
                     </span>
                 </div>
             <?php endforeach; ?>
@@ -272,5 +282,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
+<script src="/assets/js/notifications.js"></script>
 </body>
 </html>

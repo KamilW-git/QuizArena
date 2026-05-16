@@ -39,11 +39,13 @@ $stmt = $db->prepare('
         COALESCE(MAX(gs.score), 0)                      AS best_score,
         COALESCE(
             SUM(gs.correct_count)::float /
-            NULLIF(COUNT(ga.id), 0) * 100
+            NULLIF(SUM(qc.q_count), 0) * 100
         , 0)                                            AS accuracy,
         COALESCE(SUM(gs.time_taken), 0)                 AS total_time
     FROM game_sessions gs
-    LEFT JOIN game_answers ga ON ga.session_id = gs.id
+    LEFT JOIN (
+        SELECT quiz_id, COUNT(id) AS q_count FROM questions GROUP BY quiz_id
+    ) qc ON qc.quiz_id = gs.quiz_id
     WHERE gs.user_id = :uid
 ');
 $stmt->execute(['uid' => $profileId]);
@@ -110,9 +112,9 @@ $favCategory = $stmt->fetchColumn() ?: null;
 
 // ── XP / level ────────────────────────────────────────────────────────────
 $xp       = (int) $profile['xp'];
-$level    = max(1, (int) floor($xp / 200) + 1);
-$xpInLvl  = $xp % 200;
-$xpPct    = round(($xpInLvl / 200) * 100);
+$level    = max(1, (int) floor($xp / 1000) + 1);
+$xpInLvl  = $xp % 1000;
+$xpPct    = round(($xpInLvl / 1000) * 100);
 $initials = strtoupper(substr($profile['username'], 0, 2));
 $memberSince = date('M Y', strtotime($profile['created_at']));
 
@@ -166,7 +168,6 @@ $catIcon   = [
         <a href="#" class="nav-bell">🔔</a>
         <a href="/profile/index.php" class="nav-avatar">
             <?= strtoupper(substr($sessionUser['username'], 0, 2)) ?>
-            <span class="nav-level">LVL <?= max(1, (int)floor(($sessionUser['xp']??0)/200)+1) ?></span>
         </a>
     </div>
 </nav>
@@ -201,7 +202,7 @@ $catIcon   = [
                 <div class="profile-xp-bar">
                     <div class="profile-xp-fill" style="width: <?= $xpPct ?>%"></div>
                 </div>
-                <span class="profile-xp-label"><?= $xpInLvl ?> / 200 XP → Level <?= $level + 1 ?></span>
+                <span class="profile-xp-label"><?= $xpInLvl ?> / 1000 XP → Level <?= $level + 1 ?></span>
             </div>
         </div>
 
@@ -386,5 +387,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
+<script src="/assets/js/notifications.js"></script>
 </body>
 </html>

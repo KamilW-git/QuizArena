@@ -87,9 +87,9 @@ $recentGames = $stmt->fetchAll();
 $stmt = $db->prepare('SELECT xp FROM users WHERE id = :id');
 $stmt->execute(['id' => $user['id']]);
 $freshXp  = (int) $stmt->fetchColumn();
-$level    = max(1, (int) floor($freshXp / 200) + 1);
-$xpInLvl  = $freshXp % 200;
-$xpPct    = round(($xpInLvl / 200) * 100);
+$level    = max(1, (int) floor($freshXp / 1000) + 1);
+$xpInLvl  = $freshXp % 1000;
+$xpPct    = round(($xpInLvl / 1000) * 100);
 $initials = strtoupper(substr($user['username'], 0, 2));
 
 $difficultyLabel = ['', '⭐', '⭐⭐', '⭐⭐⭐'];
@@ -124,8 +124,7 @@ $categoryIcon    = [
     <div class="nav-right">
         <a href="#" class="nav-bell">🔔</a>
         <a href="/profile/index.php" class="nav-avatar">
-            <?= $initials ?>
-            <span class="nav-level">LVL <?= $level ?></span>
+            <?= strtoupper(substr($user['username'], 0, 2)) ?>
         </a>
     </div>
 </nav>
@@ -147,7 +146,7 @@ $categoryIcon    = [
         <div class="hero-xp">
             <div class="hero-xp-label">XP PROGRESSION</div>
             <div class="hero-xp-values">
-                <strong><?= $xpInLvl ?></strong> / 200 XP to level <?= $level + 1 ?>
+                <strong><?= $xpInLvl ?></strong> / 1000 XP to level <?= $level + 1 ?>
             </div>
             <div class="xp-bar">
                 <div class="xp-bar-fill" style="width: <?= $xpPct ?>%"></div>
@@ -317,5 +316,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
+<script src="/assets/js/notifications.js"></script>
 </body>
 </html>
