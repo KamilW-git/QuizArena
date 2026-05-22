@@ -1,5 +1,7 @@
 # QuizArena
 
+![Dashboard](public/assets/img/screenshots/Dashboard.png)
+
 QuizArena is a modern, responsive, and dynamic web application for playing and creating quizzes. Built with pure PHP 8.3, PostgreSQL, vanilla JS, and a custom Neon Pulse design system.
 
 ## 🚀 Features
@@ -10,6 +12,8 @@ QuizArena is a modern, responsive, and dynamic web application for playing and c
 - **Quiz Creator**: Dynamic form using vanilla JavaScript to build custom quizzes with customizable time limits.
 - **Game Engine**: A robust API-based game engine written in pure JS, recording time taken, accuracy, and scoring.
 - **Fully Responsive**: Flawless experience on desktop, tablet, and mobile devices.
+
+
 
 ## 💻 Tech Stack
 
@@ -63,3 +67,17 @@ To deploy in a production environment:
 ## 🤝 Contributing
 
 Contributions, issues, and feature requests are welcome!
+
+---
+
+## 📸 Gallery
+
+### Desktop View
+| Profile & Leaderboard | Gameplay & Results | Browse & Create |
+|:---:|:---:|:---:|
+| <img src="public/assets/img/screenshots/Profile.png" width="250" alt="Profile"><br><br><img src="public/assets/img/screenshots/Leaderboard.png" width="250" alt="Leaderboard"> | <img src="public/assets/img/screenshots/Game.png" width="250" alt="Game"><br><br><img src="public/assets/img/screenshots/GameEnd.png" width="250" alt="Game Results"> | <img src="public/assets/img/screenshots/Browse.png" width="250" alt="Browse"><br><br><img src="public/assets/img/screenshots/CreatingQuiz.png" width="250" alt="Creating Quiz"> |
+
+### Mobile View
+| Mobile Browse | Mobile Profile | Mobile Results |
+|:---:|:---:|:---:|
+| <img src="public/assets/img/screenshots/Browse_Mobile.png" width="150" alt="Mobile Browse"> | <img src="public/assets/img/screenshots/Profile_Mobile.png" width="150" alt="Mobile Profile"> | <img src="public/assets/img/screenshots/GameEnd_mobile.png" width="150" alt="Mobile Game End"> |
