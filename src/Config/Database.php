@@ -16,11 +16,11 @@ class Database
     public static function connect(): PDO
     {
         if (self::$connection === null) {
-            $host = $_ENV['DB_HOST'] ?? 'localhost';
-            $port = $_ENV['DB_PORT'] ?? '5432';
-            $name = $_ENV['DB_NAME'] ?? 'quizarena';
-            $user = $_ENV['DB_USER'] ?? 'postgres';
-            $pass = $_ENV['DB_PASS'] ?? '';
+            $host = Env::get('DB_HOST', 'db');
+            $port = Env::get('DB_PORT', '5432');
+            $name = Env::get('DB_NAME', 'quizarena');
+            $user = Env::get('DB_USER', 'postgres');
+            $pass = Env::get('DB_PASS', 'secret');
 
             $dsn = "pgsql:host=$host;port=$port;dbname=$name";
 
