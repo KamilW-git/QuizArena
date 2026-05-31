@@ -34,7 +34,7 @@ $orderBy = match($sort) {
 };
 
 // ── Zapytanie ──────────────────────────────────────────────────────────────
-$where  = ['q.is_public = true'];
+$where  = ["(q.status = 'PUBLISHED' OR (q.status IS NULL AND q.is_public = true))"];
 $params = [];
 
 if ($category) {

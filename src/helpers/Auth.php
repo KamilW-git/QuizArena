@@ -35,7 +35,27 @@ class Auth
             'username' => $user['username'],
             'email'    => $user['email'],
             'xp'       => $user['xp'],
+            'role'     => $user['role'] ?? 'USER',
+            'status'   => $user['status'] ?? 'ACTIVE',
         ];
+    }
+
+    // Sprawdź czy jest adminem
+    public static function isAdmin(): bool
+    {
+        $user = self::user();
+        return $user && ($user['role'] === 'ADMIN');
+    }
+
+    // Przekieruj jeśli nie jest adminem
+    public static function requireAdmin(): void
+    {
+        self::require();
+        if (!self::isAdmin()) {
+            http_response_code(403);
+            header('Location: /404.php'); // Or a generic 403 page
+            exit;
+        }
     }
 
     // Wyloguj
@@ -45,11 +65,18 @@ class Auth
         session_destroy();
     }
 
-    // Przekieruj na login jeśli niezalogowany
+    // Przekieruj na login jeśli niezalogowany lub ban
     public static function require(): void
     {
         if (!self::check()) {
             header('Location: /login.php');
+            exit;
+        }
+
+        $user = self::user();
+        if ($user && in_array($user['status'], ['SUSPENDED', 'BANNED'])) {
+            self::logout();
+            header('Location: /login.php?error=account_blocked');
             exit;
         }
     }

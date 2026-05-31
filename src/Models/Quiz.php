@@ -50,14 +50,14 @@ class Quiz
     // Pobierz wszystkie publiczne quizy
     public function getAll(?string $category = null): array
     {
-        $sql = '
+        $sql = "
             SELECT q.*, u.username,
                    COUNT(qu.id) as question_count
             FROM quizzes q
             JOIN users u ON u.id = q.user_id
             LEFT JOIN questions qu ON qu.quiz_id = q.id
-            WHERE q.is_public = true
-        ';
+            WHERE q.status = 'PUBLISHED' OR (q.status IS NULL AND q.is_public = true)
+        ";
 
         if ($category) {
             $sql .= ' AND q.category = :category';
@@ -143,5 +143,60 @@ class Quiz
         $stmt->execute([':id' => $id]);
         $row = $stmt->fetch();
         return $row ?: null;
+    }
+
+    // Admin: Wyszukiwanie quizów
+    public function searchQuizzes(?string $query = null): array
+    {
+        $sql = "
+            SELECT q.id, q.title, q.category, q.created_at, q.status, u.username as author,
+                   (SELECT COUNT(*) FROM questions qu WHERE qu.quiz_id = q.id) as question_count,
+                   (SELECT COUNT(*) FROM game_sessions gs WHERE gs.quiz_id = q.id) as games_played
+            FROM quizzes q
+            JOIN users u ON u.id = q.user_id
+        ";
+
+        $params = [];
+        if ($query) {
+            $sql .= " WHERE q.title ILIKE :q OR u.username ILIKE :q OR q.id::text = :q_exact";
+            $params['q'] = '%' . $query . '%';
+            $params['q_exact'] = $query;
+        }
+
+        $sql .= " ORDER BY q.created_at DESC";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+
+    // Admin: Zmiana statusu quizu
+    public function updateQuizStatus(string $id, string $status): bool
+    {
+        $stmt = $this->db->prepare('UPDATE quizzes SET status = :status WHERE id = :id');
+        return $stmt->execute(['status' => $status, 'id' => $id]);
+    }
+
+    // Admin: Usuwanie quizu
+    public function deleteQuiz(string $id): bool
+    {
+        $stmt = $this->db->prepare('DELETE FROM quizzes WHERE id = :id');
+        return $stmt->execute(['id' => $id]);
+    }
+
+    // Admin: Szybka edycja quizu (tytuł, kategoria)
+    public function updateQuiz(string $id, string $title, string $category, int $difficulty): bool
+    {
+        $stmt = $this->db->prepare('
+            UPDATE quizzes 
+            SET title = :title, category = :category, difficulty = :difficulty 
+            WHERE id = :id
+        ');
+        return $stmt->execute([
+            'title' => $title,
+            'category' => $category,
+            'difficulty' => $difficulty,
+            'id' => $id
+        ]);
     }
 }
