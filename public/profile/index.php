@@ -153,7 +153,7 @@ $catIcon   = [
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/main.css?v=2">
-    <link rel="stylesheet" href="/assets/css/profile.css">
+    <link rel="stylesheet" href="/assets/css/profile.css?v=3">
 </head>
 <body>
 
@@ -271,6 +271,12 @@ $catIcon   = [
                     $gameAcc >= 60   => '🥈',
                     default          => '🥉',
                 };
+                $accColor = match(true) {
+                    $gameAcc >= 80 => 'var(--secondary)',
+                    $gameAcc >= 50 => '#ffde21',
+                    $gameAcc >= 30 => '#ffa600',
+                    default        => '#ff4d4d'
+                };
                 $diff = (int)($game['difficulty'] ?? 1);
             ?>
                 <a href="/quiz/results.php?session=<?= htmlspecialchars($game['id']) ?>" class="history-row">
@@ -288,9 +294,9 @@ $catIcon   = [
 
                     <span class="history-acc">
                         <span class="history-acc-bar">
-                            <span class="history-acc-fill" style="width:<?= $gameAcc ?>%"></span>
+                            <span class="history-acc-fill" style="width:<?= $gameAcc ?>%; background: <?= $accColor ?>; box-shadow: 0 0 10px <?= $accColor ?>;"></span>
                         </span>
-                        <span class="history-acc-val"><?= $gameAcc ?>%</span>
+                        <span class="history-acc-val" style="color: <?= $accColor ?>;"><?= $gameAcc ?>%</span>
                     </span>
 
                     <span class="history-score">

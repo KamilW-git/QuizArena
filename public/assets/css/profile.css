@@ -244,6 +244,7 @@
     overflow: hidden;
 }
 .history-acc-fill {
+    display: block;
     height: 100%;
     background: linear-gradient(90deg, var(--primary), var(--secondary));
     border-radius: 99px;

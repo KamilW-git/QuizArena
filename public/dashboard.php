@@ -163,7 +163,7 @@ $categoryIcon    = [
                 <div class="stat-label">Games Played</div>
                 <div class="stat-value"><?= $gamesPlayed ?></div>
             </div>
-            <div class="stat-icon">🎮</div>
+            
         </div>
         <div class="stat-card acc">
             <div class="stat-info">
@@ -173,16 +173,16 @@ $categoryIcon    = [
                     <?php if ($gamesPlayed > 0): ?><sup>%</sup><?php endif; ?>
                 </div>
             </div>
-            <div class="stat-icon">🎯</div>
+            
         </div>
         <div class="stat-card wins">
             <div class="stat-info">
-                <div class="stat-label">Avg Correct</div>
+                <div class="stat-label">Avg Correct Answers Per Game</div>
                 <div class="stat-value">
                     <?= $gamesPlayed > 0 ? $avgCorrect : '—' ?>
                 </div>
             </div>
-            <div class="stat-icon">✅</div>
+           
         </div>
     </div>
 

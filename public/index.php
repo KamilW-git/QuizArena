@@ -59,7 +59,7 @@ if (Auth::check()) {
             </p>
             <div class="hero-cta">
                 <a href="/register.php" class="btn-hero-primary">PLAY NOW</a>
-                <a href="#" class="btn-hero-secondary">View Arena Rules</a>
+                <a href="/gameModes.php" class="btn-hero-secondary">View Game Modes</a>
             </div>
         </div>
 
