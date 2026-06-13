@@ -3,9 +3,11 @@
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use QuizArena\Config\Database;
+use QuizArena\Exceptions\GameException;
 use QuizArena\Helpers\Auth;
 use QuizArena\Helpers\Env;
 use QuizArena\Models\GameSession;
+use QuizArena\Services\GamePlayService;
 
 Env::load(__DIR__ . '/../../.env');
 Auth::start();
@@ -21,6 +23,13 @@ $db      = Database::connect();
 $session = GameSession::findById($db, $sessionId);
 
 if (!$session) {
+    header('Location: /quiz/browse.php');
+    exit;
+}
+
+try {
+    (new GamePlayService($db))->requireOwnedSession(Auth::user()['id'], $sessionId);
+} catch (GameException) {
     header('Location: /quiz/browse.php');
     exit;
 }
@@ -67,6 +76,7 @@ $trophy = match(true) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <?php require __DIR__ . '/../includes/theme-head.php'; ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Results — QuizArena</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -89,6 +99,7 @@ $trophy = match(true) {
         <a href="/quiz/create.php">Create Quiz</a>
     </div>
     <div class="nav-right">
+        <?php require __DIR__ . '/../includes/theme-toggle.php'; ?>
         <a href="/profile/index.php" class="nav-avatar" style="overflow: hidden;">
             <img src="https://api.dicebear.com/7.x/bottts/svg?seed=<?= urlencode($user['username']) ?>" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
         </a>
@@ -266,5 +277,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
+<script src="/assets/js/theme.js"></script>
 </body>
 </html>

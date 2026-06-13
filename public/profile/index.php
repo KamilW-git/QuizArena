@@ -148,6 +148,7 @@ $catIcon   = [
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <?php require __DIR__ . '/../includes/theme-head.php'; ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($profile['username']) ?> — QuizArena</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -165,6 +166,7 @@ $catIcon   = [
         <a href="/leaderboard/index.php">Leaderboard</a>
     </div>
     <div class="nav-right">
+        <?php require __DIR__ . '/../includes/theme-toggle.php'; ?>
         <a href="#" class="nav-bell">🔔</a>
         <a href="/profile/index.php" class="nav-avatar" style="overflow: hidden;">
             <img src="https://api.dicebear.com/7.x/bottts/svg?seed=<?= urlencode($sessionUser['username']) ?>" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
@@ -393,6 +395,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
+<script src="/assets/js/theme.js"></script>
 <script src="/assets/js/notifications.js"></script>
 </body>
 </html>

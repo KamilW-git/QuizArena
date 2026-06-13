@@ -122,6 +122,7 @@ function browsUrl(array $override = []): string {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <?php require __DIR__ . '/../includes/theme-head.php'; ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browse Quizzes — QuizArena</title>
     <link rel="stylesheet" href="/assets/css/main.css?v=2">
@@ -137,6 +138,7 @@ function browsUrl(array $override = []): string {
         <a href="/leaderboard/index.php">Leaderboard</a>
     </div>
     <div class="nav-right">
+        <?php require __DIR__ . '/../includes/theme-toggle.php'; ?>
         <a href="#" class="nav-bell">🔔</a>
         <a href="/profile/index.php" class="nav-avatar" style="overflow: hidden;">
             <img src="https://api.dicebear.com/7.x/bottts/svg?seed=<?= urlencode($user['username']) ?>" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
@@ -165,7 +167,7 @@ function browsUrl(array $override = []): string {
                 <input type="hidden" name="difficulty" value="<?= $difficulty ?>">
             <?php endif; ?>
             <div class="search-input-wrap">
-                <span class="search-icon">🔍</span>
+                
                 <input
                     type="text"
                     name="search"
@@ -340,6 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
+<script src="/assets/js/theme.js"></script>
 <script src="/assets/js/notifications.js"></script>
 </body>
 </html>

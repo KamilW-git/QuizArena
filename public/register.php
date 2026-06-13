@@ -35,11 +35,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <?php require __DIR__ . '/includes/theme-head.php'; ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register — QuizArena</title>
     <link rel="stylesheet" href="/assets/css/main.css?v=2">
 </head>
 <body>
+    <div class="auth-theme-wrap">
+        <?php require __DIR__ . '/includes/theme-toggle.php'; ?>
+    </div>
     <div class="auth-container">
         <div class="auth-card">
             <h1 class="auth-logo">QuizArena</h1>
@@ -100,5 +104,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <p class="auth-link">Already have an account? <a href="/login.php">Sign in</a></p>
         </div>
     </div>
+<script src="/assets/js/theme.js"></script>
 </body>
 </html>
