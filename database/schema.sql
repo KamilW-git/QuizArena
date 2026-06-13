@@ -76,6 +76,7 @@ CREATE TABLE game_sessions (
     score         INT       NOT NULL DEFAULT 0,
     correct_count SMALLINT  NOT NULL DEFAULT 0,
     time_taken    INT       NOT NULL DEFAULT 0,
+    is_finished   BOOLEAN   NOT NULL DEFAULT FALSE,
     completed_at  TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
@@ -134,6 +135,7 @@ CREATE INDEX idx_answers_question_id  ON answers(question_id);
 CREATE INDEX idx_sessions_user_id     ON game_sessions(user_id);
 CREATE INDEX idx_sessions_quiz_id     ON game_sessions(quiz_id);
 CREATE INDEX idx_game_answers_session ON game_answers(session_id);
+CREATE UNIQUE INDEX idx_game_answers_session_question ON game_answers(session_id, question_id);
 
 -- ============================================
 -- SAMPLE DATA — kilka rekordów do testów

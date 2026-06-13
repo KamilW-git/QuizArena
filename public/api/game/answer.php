@@ -1,29 +1,12 @@
 <?php
-/**
- * POST /api/game/answer.php
- *
- * Body (JSON):
- * {
- *   "session_id":    "uuid",
- *   "question_id":   "uuid",
- *   "chosen_index":  2,          // 0-3, lub -1 jeśli timeout
- *   "time_spent_ms": 8500
- * }
- *
- * Response (JSON):
- * {
- *   "correct":       true,
- *   "correct_index": 2,
- *   "points_awarded": 100
- * }
- */
 
 require_once __DIR__ . '/../../../vendor/autoload.php';
 
 use QuizArena\Config\Database;
+use QuizArena\Exceptions\GameException;
 use QuizArena\Helpers\Auth;
 use QuizArena\Helpers\Env;
-use QuizArena\Models\GameSession;
+use QuizArena\Services\GamePlayService;
 
 header('Content-Type: application/json');
 
@@ -45,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $body        = json_decode(file_get_contents('php://input'), true);
 $sessionId   = $body['session_id']   ?? null;
 $questionId  = $body['question_id']  ?? null;
-$chosenIndex = $body['chosen_index'] ?? null;   // może być -1 (timeout)
+$chosenIndex = $body['chosen_index'] ?? null;
 $timeSpentMs = $body['time_spent_ms'] ?? 0;
 
 if (!$sessionId || !$questionId || $chosenIndex === null) {
@@ -55,44 +38,23 @@ if (!$sessionId || !$questionId || $chosenIndex === null) {
 }
 
 try {
-    $db = Database::connect();
+    $db      = Database::connect();
+    $user    = Auth::user();
+    $service = new GamePlayService($db);
 
-    // Pobierz poprawną odpowiedź dla tego pytania
-    $stmt = $db->prepare('SELECT correct_answer FROM questions WHERE id = :id');
-    $stmt->execute(['id' => $questionId]);
-    $question = $stmt->fetch();
-
-    if (!$question) {
-        http_response_code(404);
-        echo json_encode(['error' => 'Question not found']);
-        exit;
-    }
-
-    $correctIndex = (int) $question['correct_answer'];
-    $isTimeout    = (int) $chosenIndex === -1;
-    $isCorrect    = !$isTimeout && (int) $chosenIndex === $correctIndex;
-    $timeSpentSec = (int) round($timeSpentMs / 1000);
-
-    // Prosta punktacja: 100 pkt za poprawną, 0 za złą/timeout
-    $pointsAwarded = $isCorrect ? 100 : 0;
-
-    // Zapisz odpowiedź w bazie
-    $sessionModel = new GameSession($db);
-    $sessionModel->saveAnswer(
+    $result = $service->submitAnswer(
+        $user['id'],
         $sessionId,
         $questionId,
-        $isTimeout ? 0 : (int) $chosenIndex,  // constraint: 0-3
-        $isCorrect,
-        $timeSpentSec
+        (int) $chosenIndex,
+        (int) $timeSpentMs
     );
 
-    echo json_encode([
-        'correct'        => $isCorrect,
-        'correct_index'  => $correctIndex,
-        'points_awarded' => $pointsAwarded,
-    ]);
-
+    echo json_encode($result);
+} catch (GameException $e) {
+    http_response_code($e->statusCode);
+    echo json_encode(['error' => $e->getMessage()]);
 } catch (Throwable $e) {
     http_response_code(500);
-    echo json_encode(['error' => 'Server error', 'detail' => $e->getMessage()]);
+    echo json_encode(['error' => 'Server error']);
 }

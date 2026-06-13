@@ -3,6 +3,7 @@
 namespace QuizArena\Models;
 
 use PDO;
+use QuizArena\Exceptions\GameException;
 use QuizArena\Models\Achievement;
 
 class GameSession
@@ -33,13 +34,87 @@ class GameSession
     }
 
     /**
+     * Pobierz sesję i zweryfikuj, że należy do podanego użytkownika.
+     *
+     * @throws GameException 404 gdy brak sesji, 403 gdy cudza sesja
+     */
+    public function requireOwnedSession(string $sessionId, string $userId): array
+    {
+        $stmt = $this->db->prepare('
+            SELECT id, user_id, quiz_id, score, correct_count, time_taken, is_finished
+            FROM game_sessions
+            WHERE id = :id
+        ');
+        $stmt->execute(['id' => $sessionId]);
+        $session = $stmt->fetch();
+
+        if (!$session) {
+            throw new GameException('Session not found', 404);
+        }
+
+        if ($session['user_id'] !== $userId) {
+            throw new GameException('Access denied', 403);
+        }
+
+        return $session;
+    }
+
+    /**
+     * @throws GameException 409 gdy sesja jest już zakończona
+     */
+    public function requireActiveSession(string $sessionId, string $userId): array
+    {
+        $session = $this->requireOwnedSession($sessionId, $userId);
+
+        if (self::toBool($session['is_finished'])) {
+            throw new GameException('Session already finished', 409);
+        }
+
+        return $session;
+    }
+
+    /**
+     * @throws GameException 404 gdy pytanie nie należy do quizu sesji
+     */
+    public function requireQuestionInSession(string $sessionId, string $quizId, string $questionId): array
+    {
+        $stmt = $this->db->prepare('
+            SELECT id, correct_answer
+            FROM questions
+            WHERE id = :id AND quiz_id = :quiz_id
+        ');
+        $stmt->execute([
+            'id'      => $questionId,
+            'quiz_id' => $quizId,
+        ]);
+        $question = $stmt->fetch();
+
+        if (!$question) {
+            throw new GameException('Question not found in this session', 404);
+        }
+
+        return $question;
+    }
+
+    public function hasAnsweredQuestion(string $sessionId, string $questionId): bool
+    {
+        $stmt = $this->db->prepare('
+            SELECT 1 FROM game_answers
+            WHERE session_id = :session_id AND question_id = :question_id
+            LIMIT 1
+        ');
+        $stmt->execute([
+            'session_id'  => $sessionId,
+            'question_id' => $questionId,
+        ]);
+
+        return (bool) $stmt->fetchColumn();
+    }
+
+    /**
      * Zapisz odpowiedź gracza na jedno pytanie.
      *
-     * @param string $sessionId  UUID sesji
-     * @param string $questionId UUID pytania
-     * @param int    $chosenIndex Indeks wybranej odpowiedzi (0-3), -1 = timeout
-     * @param bool   $isCorrect  Czy odpowiedź była poprawna
-     * @param int    $timeSpent  Czas w sekundach
+     * @throws GameException 409 gdy pytanie już zostało udzielone
      */
     public function saveAnswer(
         string $sessionId,
@@ -48,7 +123,10 @@ class GameSession
         bool   $isCorrect,
         int    $timeSpent
     ): void {
-        // chosen_index BETWEEN 0 AND 3 — przy timeout wstawiamy 0 (constraint wymaga)
+        if ($this->hasAnsweredQuestion($sessionId, $questionId)) {
+            throw new GameException('Question already answered', 409);
+        }
+
         $safeIndex = max(0, min(3, $chosenIndex));
 
         $stmt = $this->db->prepare('
@@ -66,11 +144,54 @@ class GameSession
 
     /**
      * Zakończ sesję — wylicz score, correct_count, time_taken i zapisz.
-     * Zwraca finalny wynik.
+     * Idempotentne: ponowne wywołanie nie przyznaje XP ponownie.
      */
-    public function finish(string $sessionId): array
+    public function finish(string $sessionId, string $userId): array
     {
-        // Pobierz wszystkie odpowiedzi tej sesji
+        $session = $this->requireOwnedSession($sessionId, $userId);
+
+        if (self::toBool($session['is_finished'])) {
+            return $this->buildFinishResult($sessionId, $session, xpEarned: 0, achievements: []);
+        }
+
+        $ownsTransaction = !$this->db->inTransaction();
+        if ($ownsTransaction) {
+            $this->db->beginTransaction();
+        }
+
+        try {
+            $stmt = $this->db->prepare('
+                SELECT is_finished FROM game_sessions
+                WHERE id = :id FOR UPDATE
+            ');
+            $stmt->execute(['id' => $sessionId]);
+            $locked = $stmt->fetch();
+
+            if (!$locked || self::toBool($locked['is_finished'])) {
+                if ($ownsTransaction) {
+                    $this->db->rollBack();
+                }
+                $session = $this->requireOwnedSession($sessionId, $userId);
+                return $this->buildFinishResult($sessionId, $session, xpEarned: 0, achievements: []);
+            }
+
+            $result = $this->finalizeSession($sessionId, $session['user_id']);
+
+            if ($ownsTransaction) {
+                $this->db->commit();
+            }
+
+            return $result;
+        } catch (\Throwable $e) {
+            if ($ownsTransaction && $this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            throw $e;
+        }
+    }
+
+    private function finalizeSession(string $sessionId, string $userId): array
+    {
         $stmt = $this->db->prepare('
             SELECT is_correct, time_spent
             FROM game_answers
@@ -82,37 +203,32 @@ class GameSession
         $correctCount = 0;
         $totalTime    = 0;
         foreach ($answers as $a) {
-            if ($a['is_correct']) $correctCount++;
+            if ($a['is_correct']) {
+                $correctCount++;
+            }
             $totalTime += (int) $a['time_spent'];
         }
 
         $totalQuestions = count($answers);
         $accuracy       = $totalQuestions > 0 ? $correctCount / $totalQuestions : 0;
 
-        // Prosta formuła XP: 100 za pytanie * accuracy + bonus za szybkość
         $baseXp   = (int) round(100 * $correctCount);
         $speedXp  = $totalTime > 0 ? (int) max(0, 50 - $totalTime) : 0;
         $xpEarned = $baseXp + $speedXp;
-        $score    = $baseXp; // score = punkty bez bonusu za szybkość
+        $score    = $baseXp;
 
-        // Pobierz user_id tej sesji
-        $stmt = $this->db->prepare('SELECT user_id FROM game_sessions WHERE id = :id');
-        $stmt->execute(['id' => $sessionId]);
-        $userId = $stmt->fetchColumn();
-
-        // Pobierz XP przed aktualizacją
         $stmt = $this->db->prepare('SELECT xp FROM users WHERE id = :user_id');
         $stmt->execute(['user_id' => $userId]);
-        $oldXp = (int) $stmt->fetchColumn();
+        $oldXp    = (int) $stmt->fetchColumn();
         $oldLevel = max(1, (int) floor($oldXp / 1000) + 1);
         $newLevel = max(1, (int) floor(($oldXp + $xpEarned) / 1000) + 1);
 
-        // Zaktualizuj sesję
         $stmt = $this->db->prepare('
             UPDATE game_sessions
             SET score         = :score,
                 correct_count = :correct_count,
                 time_taken    = :time_taken,
+                is_finished   = TRUE,
                 completed_at  = NOW()
             WHERE id = :id
         ');
@@ -123,20 +239,16 @@ class GameSession
             'id'            => $sessionId,
         ]);
 
-        // Dodaj XP użytkownikowi
         $stmt = $this->db->prepare('
-            UPDATE users u
-            SET xp = u.xp + :xp
-            FROM game_sessions gs
-            WHERE gs.id = :session_id
-              AND u.id  = gs.user_id
+            UPDATE users
+            SET xp = xp + :xp
+            WHERE id = :user_id
         ');
         $stmt->execute([
-            'xp'         => $xpEarned,
-            'session_id' => $sessionId,
+            'xp'      => $xpEarned,
+            'user_id' => $userId,
         ]);
 
-        // Wyślij powiadomienie o Level Up
         if ($newLevel > $oldLevel) {
             $stmt = $this->db->prepare('
                 INSERT INTO notifications (user_id, title, message, type)
@@ -146,22 +258,55 @@ class GameSession
                 'user_id' => $userId,
                 'title'   => 'Level Up! 🎉',
                 'message' => "Gratulacje! Wbiłeś $newLevel poziom!",
-                'type'    => 'level_up'
+                'type'    => 'level_up',
             ]);
         }
 
-         // Sprawdź i przyznaj achievementy
-        $achievement = new Achievement($this->db);
-        $newlyUnlocked = $achievement->checkAndAward($userId);
+        $achievement     = new Achievement($this->db);
+        $newlyUnlocked   = $achievement->checkAndAward($userId);
+
+        $session = $this->requireOwnedSession($sessionId, $userId);
+
+        return $this->buildFinishResult($sessionId, $session, $xpEarned, $newlyUnlocked, $accuracy, $totalQuestions);
+    }
+
+    private function buildFinishResult(
+        string $sessionId,
+        array $session,
+        int $xpEarned,
+        array $achievements,
+        ?float $accuracy = null,
+        ?int $totalQuestions = null
+    ): array {
+        if ($accuracy === null || $totalQuestions === null) {
+            $stmt = $this->db->prepare('
+                SELECT COUNT(*) AS total, SUM(CASE WHEN is_correct THEN 1 ELSE 0 END) AS correct
+                FROM game_answers
+                WHERE session_id = :session_id
+            ');
+            $stmt->execute(['session_id' => $sessionId]);
+            $stats          = $stmt->fetch();
+            $totalQuestions = (int) $stats['total'];
+            $correctCount   = (int) $stats['correct'];
+            $accuracy       = $totalQuestions > 0 ? $correctCount / $totalQuestions : 0;
+        } else {
+            $correctCount = (int) $session['correct_count'];
+        }
 
         return [
-            'score'          => $score,
-            'correct_count'  => $correctCount,
-            'total_questions'=> $totalQuestions,
-            'xp_earned'      => $xpEarned,
-            'accuracy'       => round($accuracy * 100),
-            'achievements'    => $newlyUnlocked,
+            'score'           => (int) $session['score'],
+            'correct_count'   => (int) $session['correct_count'],
+            'total_questions' => $totalQuestions,
+            'xp_earned'       => $xpEarned,
+            'accuracy'        => (int) round($accuracy * 100),
+            'achievements'    => $achievements,
+            'already_finished'=> self::toBool($session['is_finished']) && $xpEarned === 0,
         ];
+    }
+
+    private static function toBool(mixed $value): bool
+    {
+        return $value === true || $value === 't' || $value === 1 || $value === '1';
     }
 
     /**
