@@ -1,4 +1,4 @@
-# QuizArena – platforma quizów z grywalizacją
+# QuizArena
 
 > Aplikacja webowa do tworzenia, przeglądania i rozwiązywania quizów
 > z systemem XP, osiągnięć, rankingów i panelu administracyjnego.
@@ -7,7 +7,7 @@
 Interfejs z trybem **jasnym** i **ciemnym** (przełącznik w navbarze, zapis w `localStorage`),
 responsywny układ desktop/mobile. Uruchomienie jednym poleceniem `docker compose up --build -d`.
 
-![Dashboard — tryb jasny](QuizArena_Screenshots/dashboard_desktop_light.png)
+![Landing page — desktop](QuizArena_Screenshots/landing_desktop.png)
 
 ---
 
@@ -38,11 +38,13 @@ Administratorzy zarządzają użytkownikami, quizami i audytem akcji.
 
 ### Główne funkcje wg roli
 
-| Rola | Dostępne funkcje |
-|------|------------------|
-| **Gość** | Landing page, rejestracja, logowanie |
-| **Gracz (USER)** | Dashboard, przeglądanie quizów (filtry, wyszukiwarka), tworzenie quizów, gra (API), wyniki, profil, leaderboard, oceny quizów, powiadomienia, przełącznik motywu |
-| **Administrator** | Panel admin: użytkownicy, quizy, zmiana statusu (ACTIVE / SUSPENDED / BANNED), ukrywanie quizów, logi akcji (`admin_logs`) |
+
+| Rola              | Dostępne funkcje                                                                                                                                                 |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Gość**          | Landing page, rejestracja, logowanie                                                                                                                             |
+| **Gracz (USER)**  | Dashboard, przeglądanie quizów (filtry, wyszukiwarka), tworzenie quizów, gra (API), wyniki, profil, leaderboard, oceny quizów, powiadomienia, przełącznik motywu |
+| **Administrator** | Panel admin: użytkownicy, quizy, zmiana statusu (ACTIVE / SUSPENDED / BANNED), ukrywanie quizów, logi akcji (`admin_logs`)                                       |
+
 
 > **Uwaga:** kolumny `users.role`, `users.status`, `quizzes.status` oraz tabela `admin_logs`
 > wymagają uruchomienia skryptu `migrate_admin_system.php` (patrz [Instrukcja uruchomienia](#instrukcja-uruchomienia)).
@@ -53,14 +55,16 @@ Administratorzy zarządzają użytkownikami, quizami i audytem akcji.
 
 ### Stack technologiczny
 
-| Warstwa | Technologia |
-|---------|-------------|
-| Backend | PHP 8.3 OOP (bez frameworka), Apache |
-| Baza danych | PostgreSQL 17 |
-| Frontend | HTML5 (szablony PHP), Vanilla JavaScript, Vanilla CSS (Neon Pulse) |
-| Konteneryzacja | Docker + Docker Compose |
-| Testy | PHPUnit 11 (Unit + Integration) |
-| Autoloader | Composer PSR-4 (`QuizArena\`) |
+
+| Warstwa        | Technologia                                                        |
+| -------------- | ------------------------------------------------------------------ |
+| Backend        | PHP 8.3 OOP (bez frameworka), Apache                               |
+| Baza danych    | PostgreSQL 17                                                      |
+| Frontend       | HTML5 (szablony PHP), Vanilla JavaScript, Vanilla CSS (Neon Pulse) |
+| Konteneryzacja | Docker + Docker Compose                                            |
+| Testy          | PHPUnit 11 (Unit + Integration)                                    |
+| Autoloader     | Composer PSR-4 (`QuizArena\`)                                      |
+
 
 ### Architektura (MVC-lite + Services)
 
@@ -162,6 +166,7 @@ docker compose up --build -d
 ```
 
 Przy pierwszym uruchomieniu Docker:
+
 - buduje obraz PHP 8.3 + Apache,
 - uruchamia PostgreSQL 17,
 - montuje `database/schema.sql` do inicjalizacji bazy,
@@ -182,7 +187,7 @@ docker compose exec app php migrate_admin_system.php
 
 - Plik `database/seeds/sample_data.sql` — 15 quizów (wymaga użytkownika `player_one`).
 - Skrypt `public/seed.php` — **resetuje całą bazę** i ładuje dane od nowa.  
-  **Używać wyłącznie w środowisku deweloperskim** — nie wystawiać publicznie na produkcji.
+**Używać wyłącznie w środowisku deweloperskim** — nie wystawiać publicznie na produkcji.
 
 ### 6. Testy
 
@@ -211,13 +216,15 @@ docker compose down
 
 Plik `.env` (wzorzec: `.env.example`):
 
-| Zmienna | Opis | Wartość domyślna |
-|---------|------|------------------|
-| `DB_HOST` | Host PostgreSQL | `db` |
-| `DB_PORT` | Port PostgreSQL | `5432` |
-| `DB_NAME` | Nazwa bazy | `quizarena` |
-| `DB_USER` | Użytkownik DB | `postgres` |
-| `DB_PASS` | Hasło DB | `secret` |
+
+| Zmienna   | Opis            | Wartość domyślna |
+| --------- | --------------- | ---------------- |
+| `DB_HOST` | Host PostgreSQL | `db`             |
+| `DB_PORT` | Port PostgreSQL | `5432`           |
+| `DB_NAME` | Nazwa bazy      | `quizarena`      |
+| `DB_USER` | Użytkownik DB   | `postgres`       |
+| `DB_PASS` | Hasło DB        | `secret`         |
+
 
 > Na produkcji ustaw silne hasła (`DB_PASS`, `POSTGRES_PASSWORD` w docker-compose)
 > i nie commituj pliku `.env`.
@@ -226,10 +233,12 @@ Plik `.env` (wzorzec: `.env.example`):
 
 ## Konta testowe
 
-| E-mail / login | Hasło | Rola | Źródło |
-|----------------|-------|------|--------|
-| `player@quizarena.com` (`player_one`) | `test1234` | USER | `database/schema.sql` / seed |
-| `admin@quizarena.com` | `admin1209` | ADMIN | `migrate_admin_system.php` |
+
+| E-mail / login                        | Hasło       | Rola  | Źródło                       |
+| ------------------------------------- | ----------- | ----- | ---------------------------- |
+| `player@quizarena.com` (`player_one`) | `test1234`  | USER  | `database/schema.sql` / seed |
+| `admin@quizarena.com`                 | `admin1209` | ADMIN | `migrate_admin_system.php`   |
+
 
 Hasła deweloperskie — **nie używać na produkcji**.
 
@@ -242,44 +251,50 @@ Brak centralnego routera (`routes.php`).
 
 ### Strony (HTML)
 
-| URL | Opis | Auth |
-|-----|------|------|
-| `/` | Landing page | Gość |
-| `/login.php`, `/register.php` | Logowanie / rejestracja | Gość |
-| `/dashboard.php` | Panel gracza, statystyki | Sesja |
-| `/quiz/browse.php` | Katalog quizów (filtry, paginacja) | Sesja |
-| `/quiz/create.php` | Kreator quizu (dynamiczny JS) | Sesja |
-| `/quiz/play.php?id=` | Ekran gry | Sesja |
-| `/quiz/results.php?session=` | Wyniki (tylko własna sesja) | Sesja |
-| `/profile/index.php` | Profil, osiągnięcia, historia | Sesja |
-| `/leaderboard/index.php` | Ranking graczy | Sesja |
-| `/admin/*` | Panel administracyjny | ADMIN |
+
+| URL                           | Opis                               | Auth  |
+| ----------------------------- | ---------------------------------- | ----- |
+| `/`                           | Landing page                       | Gość  |
+| `/login.php`, `/register.php` | Logowanie / rejestracja            | Gość  |
+| `/dashboard.php`              | Panel gracza, statystyki           | Sesja |
+| `/quiz/browse.php`            | Katalog quizów (filtry, paginacja) | Sesja |
+| `/quiz/create.php`            | Kreator quizu (dynamiczny JS)      | Sesja |
+| `/quiz/play.php?id=`          | Ekran gry                          | Sesja |
+| `/quiz/results.php?session=`  | Wyniki (tylko własna sesja)        | Sesja |
+| `/profile/index.php`          | Profil, osiągnięcia, historia      | Sesja |
+| `/leaderboard/index.php`      | Ranking graczy                     | Sesja |
+| `/admin/`*                    | Panel administracyjny              | ADMIN |
+
 
 ### API JSON
 
-| Metoda | URL | Auth | Opis |
-|--------|-----|------|------|
-| `POST` | `/api/game/start.php` | Sesja | `{ quiz_id }` → sesja + pytania (bez poprawnych odpowiedzi) |
-| `POST` | `/api/game/answer.php` | Sesja | Odpowiedź na pytanie (+ weryfikacja właściciela sesji) |
-| `POST` | `/api/game/finish.php` | Sesja | Zakończenie gry, XP, osiągnięcia (idempotentne) |
-| `POST` | `/api/quiz/rate.php` | Sesja | Ocena quizu 1–5 |
-| `GET` | `/api/notifications.php` | Sesja | Lista powiadomień |
-| `POST` | `/api/notifications/read.php` | Sesja | Oznacz jako przeczytane |
-| `POST` | `/api/admin/action.php` | ADMIN + CSRF | Akcje administracyjne |
+
+| Metoda | URL                           | Auth         | Opis                                                        |
+| ------ | ----------------------------- | ------------ | ----------------------------------------------------------- |
+| `POST` | `/api/game/start.php`         | Sesja        | `{ quiz_id }` → sesja + pytania (bez poprawnych odpowiedzi) |
+| `POST` | `/api/game/answer.php`        | Sesja        | Odpowiedź na pytanie (+ weryfikacja właściciela sesji)      |
+| `POST` | `/api/game/finish.php`        | Sesja        | Zakończenie gry, XP, osiągnięcia (idempotentne)             |
+| `POST` | `/api/quiz/rate.php`          | Sesja        | Ocena quizu 1–5                                             |
+| `GET`  | `/api/notifications.php`      | Sesja        | Lista powiadomień                                           |
+| `POST` | `/api/notifications/read.php` | Sesja        | Oznacz jako przeczytane                                     |
+| `POST` | `/api/admin/action.php`       | ADMIN + CSRF | Akcje administracyjne                                       |
+
 
 ### Kody odpowiedzi HTTP (API)
 
-| Kod | Kiedy |
-|-----|-------|
-| `200` | Sukces |
+
+| Kod   | Kiedy                                   |
+| ----- | --------------------------------------- |
+| `200` | Sukces                                  |
 | `302` | Przekierowanie (strony PHP, brak sesji) |
-| `400` | Brak wymaganych pól / zły CSRF |
-| `401` | Brak sesji (API) |
-| `403` | Brak uprawnień / cudza sesja gry |
-| `404` | Quiz / pytanie / sesja nie istnieje |
-| `405` | Zła metoda HTTP |
-| `409` | Sesja zakończona / duplikat odpowiedzi |
-| `500` | Błąd serwera |
+| `400` | Brak wymaganych pól / zły CSRF          |
+| `401` | Brak sesji (API)                        |
+| `403` | Brak uprawnień / cudza sesja gry        |
+| `404` | Quiz / pytanie / sesja nie istnieje     |
+| `405` | Zła metoda HTTP                         |
+| `409` | Sesja zakończona / duplikat odpowiedzi  |
+| `500` | Błąd serwera                            |
+
 
 ---
 
@@ -312,6 +327,7 @@ Create (/quiz/create.php)
 ### Autoryzacja sesji gry
 
 Logika w `GamePlayService` / `GameSession`:
+
 - weryfikacja, że `session_id` należy do zalogowanego użytkownika,
 - pytanie musi należeć do quizu sesji,
 - `finish()` jest idempotentne (XP tylko raz),
@@ -359,44 +375,50 @@ game_sessions.is_finished   (migracja 001)
 
 ### Tabele
 
-| Tabela | Opis |
-|--------|------|
-| `users` | Konta, XP, (role, status po migracji) |
-| `quizzes` | Quizy użytkowników |
-| `questions` | Pytania (4 odpowiedzi, timer) |
-| `answers` | Odpowiedzi (index 0–3) |
-| `quiz_ratings` | Oceny 1–5 (UNIQUE user + quiz) |
-| `game_sessions` | Sesje gry |
-| `game_answers` | Odpowiedzi w sesji (UNIQUE session + question) |
-| `achievements` | Definicje osiągnięć |
-| `user_achievements` | Odblokowane osiągnięcia |
-| `notifications` | Powiadomienia użytkownika |
-| `admin_logs` | Audyt akcji admina (po migracji) |
+
+| Tabela              | Opis                                           |
+| ------------------- | ---------------------------------------------- |
+| `users`             | Konta, XP, (role, status po migracji)          |
+| `quizzes`           | Quizy użytkowników                             |
+| `questions`         | Pytania (4 odpowiedzi, timer)                  |
+| `answers`           | Odpowiedzi (index 0–3)                         |
+| `quiz_ratings`      | Oceny 1–5 (UNIQUE user + quiz)                 |
+| `game_sessions`     | Sesje gry                                      |
+| `game_answers`      | Odpowiedzi w sesji (UNIQUE session + question) |
+| `achievements`      | Definicje osiągnięć                            |
+| `user_achievements` | Odblokowane osiągnięcia                        |
+| `notifications`     | Powiadomienia użytkownika                      |
+| `admin_logs`        | Audyt akcji admina (po migracji)               |
+
 
 ### Widoki SQL
 
-Plik [`database/views.sql`](database/views.sql) — uruchom po `schema.sql`:
+Plik `[database/views.sql](database/views.sql)` — uruchom po `schema.sql`:
 
 ```bash
 cat database/views.sql | docker compose exec -T db psql -U postgres -d quizarena
 ```
 
-| Widok | Opis | Użycie w aplikacji |
-|-------|------|-------------------|
-| `v_quiz_stats` | Liczba pytań, gier, średnia ocena | Katalog quizów (`browse.php`) |
-| `v_player_leaderboard` | XP, wynik, accuracy gracza | Ranking (`leaderboard/index.php`) |
-| `v_session_summary` | Sesja + użytkownik + quiz | Wyniki, profil, dashboard |
-| `v_user_achievement_progress` | Osiągnięcia z flagą unlock | Profil użytkownika |
+
+| Widok                         | Opis                              | Użycie w aplikacji                |
+| ----------------------------- | --------------------------------- | --------------------------------- |
+| `v_quiz_stats`                | Liczba pytań, gier, średnia ocena | Katalog quizów (`browse.php`)     |
+| `v_player_leaderboard`        | XP, wynik, accuracy gracza        | Ranking (`leaderboard/index.php`) |
+| `v_session_summary`           | Sesja + użytkownik + quiz         | Wyniki, profil, dashboard         |
+| `v_user_achievement_progress` | Osiągnięcia z flagą unlock        | Profil użytkownika                |
+
 
 ### Elementy bazy — stan projektu
 
-| Element | Status |
-|---------|--------|
-| Klucze obce + CASCADE | ✅ `database/schema.sql` |
-| Indeksy | ✅ m.in. quiz_id, session_id, user_id |
-| Widoki SQL (`CREATE VIEW`) | ✅ `database/views.sql` (4 widoki) |
-| Triggery / funkcje PL/pgSQL | ❌ brak |
-| Transakcje w aplikacji | ✅ m.in. tworzenie quizu, finish sesji (`FOR UPDATE`) |
+
+| Element                     | Status                                               |
+| --------------------------- | ---------------------------------------------------- |
+| Klucze obce + CASCADE       | ✅ `database/schema.sql`                              |
+| Indeksy                     | ✅ m.in. quiz_id, session_id, user_id                 |
+| Widoki SQL (`CREATE VIEW`)  | ✅ `database/views.sql` (4 widoki)                    |
+| Triggery / funkcje PL/pgSQL | ❌ brak                                               |
+| Transakcje w aplikacji      | ✅ m.in. tworzenie quizu, finish sesji (`FOR UPDATE`) |
+
 
 ---
 
@@ -404,21 +426,23 @@ cat database/views.sql | docker compose exec -T db psql -U postgres -d quizarena
 
 ### Zaimplementowane
 
-| Obszar | Implementacja |
-|--------|---------------|
-| SQL Injection | Prepared statements (PDO) w modelach i API |
-| Hasła | `password_hash` / `password_verify` (bcrypt) |
-| CSRF | Tokeny na formularzach i akcjach admina (`Auth::validateCsrfToken`) |
-| XSS (PHP) | `htmlspecialchars()` w szablonach |
-| IDOR (gra) | Weryfikacja właściciela sesji w `GamePlayService` |
-| Panel admin | `Auth::requireAdmin()` |
-| Audyt admina | Tabela `admin_logs` |
+
+| Obszar        | Implementacja                                                       |
+| ------------- | ------------------------------------------------------------------- |
+| SQL Injection | Prepared statements (PDO) w modelach i API                          |
+| Hasła         | `password_hash` / `password_verify` (bcrypt)                        |
+| CSRF          | Tokeny na formularzach i akcjach admina (`Auth::validateCsrfToken`) |
+| XSS (PHP)     | `htmlspecialchars()` w szablonach                                   |
+| IDOR (gra)    | Weryfikacja właściciela sesji w `GamePlayService`                   |
+| Panel admin   | `Auth::requireAdmin()`                                              |
+| Audyt admina  | Tabela `admin_logs`                                                 |
+
 
 ---
 
 ## Widoki aplikacji — galeria
 
-Zrzuty ekranu w katalogu [`QuizArena_Screenshots/`](QuizArena_Screenshots/).
+Zrzuty ekranu w katalogu `[QuizArena_Screenshots/](QuizArena_Screenshots/)`.
 
 Przełącznik motywu: ikona ☀️ / 🌙 w prawym górnym rogu (obok dzwonka powiadomień).
 Wybór zapisywany w `localStorage` (`quizarena-theme`) — przetrwa odświeżenie strony.
@@ -427,73 +451,99 @@ Wybór zapisywany w `localStorage` (`quizarena-theme`) — przetrwa odświeżeni
 
 ### 🖥️ Desktop — tryb jasny
 
-| Dashboard | Przeglądanie quizów | Tworzenie quizu |
-|:---:|:---:|:---:|
-| ![Dashboard light](QuizArena_Screenshots/dashboard_desktop_light.png) | ![Browse light](QuizArena_Screenshots/browse_desktop_light.png) | ![Create light](QuizArena_Screenshots/createquiz_desktop_light.png) |
 
-| Profil | Leaderboard | Powiadomienia |
-|:---:|:---:|:---:|
-| ![Profile light](QuizArena_Screenshots/profile_desktop_light.png) | ![Leaderboard light](QuizArena_Screenshots/leaderbeoard_desktop_light.png) | ![Notifications light](QuizArena_Screenshots/dashboard_notifications_desktop_light.png) |
+| Dashboard       | Przeglądanie quizów | Tworzenie quizu |
+| --------------- | ------------------- | --------------- |
+| Dashboard light | Browse light        | Create light    |
+
+
+
+| Profil        | Leaderboard       | Powiadomienia       |
+| ------------- | ----------------- | ------------------- |
+| Profile light | Leaderboard light | Notifications light |
+
 
 ---
 
 ### 🖥️ Desktop — tryb ciemny
 
-| Dashboard | Przeglądanie quizów | Profil |
-|:---:|:---:|:---:|
-| ![Dashboard dark](QuizArena_Screenshots/dashboard_desktop_dark.png) | ![Browse dark](QuizArena_Screenshots/browse_desktop_dark.png) | ![Profile dark](QuizArena_Screenshots/profile_desktop_dark.png) |
 
-| Leaderboard | Przed grą | Gra — poprawna odpowiedź |
-|:---:|:---:|:---:|
-| ![Leaderboard dark](QuizArena_Screenshots/leaderboard_desktop_dark.png) | ![Pregame dark](QuizArena_Screenshots/pregame_desktop_dark.png) | ![Game correct dark](QuizArena_Screenshots/gamecorrect_desktop_dark.png) |
+| Dashboard      | Przeglądanie quizów | Profil       |
+| -------------- | ------------------- | ------------ |
+| Dashboard dark | Browse dark         | Profile dark |
 
-| Gra — błędna odpowiedź | Logowanie | Rejestracja |
-|:---:|:---:|:---:|
-| ![Game incorrect dark](QuizArena_Screenshots/gameincorrect_desktop_dark.png) | ![Login dark](QuizArena_Screenshots/login_desktop_dark.png) | ![Register dark](QuizArena_Screenshots/register_desktop_dark.png) |
+
+
+| Leaderboard      | Przed grą    | Gra — poprawna odpowiedź |
+| ---------------- | ------------ | ------------------------ |
+| Leaderboard dark | Pregame dark | Game correct dark        |
+
+
+
+| Gra — błędna odpowiedź | Logowanie  | Rejestracja   |
+| ---------------------- | ---------- | ------------- |
+| Game incorrect dark    | Login dark | Register dark |
+
+
 
 | Landing (strona główna) | Landing — sekcja 2 |
-|:---:|:---:|
-| ![Landing](QuizArena_Screenshots/landing_desktop.png) | ![Landing 2](QuizArena_Screenshots/landing2_desktop.png) |
+| ----------------------- | ------------------ |
+| Landing                 | Landing 2          |
+
 
 ---
 
 ### 📱 Mobile — tryb jasny
 
-| Dashboard | Przeglądanie | Profil |
-|:---:|:---:|:---:|
-| ![Dashboard mobile light](QuizArena_Screenshots/dashboard_mobile_light.png) | ![Browse mobile light](QuizArena_Screenshots/browse_mobile_light.png) | ![Profile mobile light](QuizArena_Screenshots/profile_mobile_light.png) |
 
-| Leaderboard | Wyniki gry | Logowanie |
-|:---:|:---:|:---:|
-| ![Leaderboard mobile light](QuizArena_Screenshots/leaderboard_mobile_light.png) | ![Summary mobile light](QuizArena_Screenshots/summary_mobile_light.png) | ![Login mobile light](QuizArena_Screenshots/login_mobile_light.png) |
+| Dashboard              | Przeglądanie        | Profil               |
+| ---------------------- | ------------------- | -------------------- |
+| Dashboard mobile light | Browse mobile light | Profile mobile light |
 
-| Rejestracja | Landing |
-|:---:|:---:|
-| ![Register mobile light](QuizArena_Screenshots/register_mobile_light.png) | ![Landing mobile](QuizArena_Screenshots/landing_mobile.png) |
+
+
+| Leaderboard              | Wyniki gry           | Logowanie          |
+| ------------------------ | -------------------- | ------------------ |
+| Leaderboard mobile light | Summary mobile light | Login mobile light |
+
+
+
+| Rejestracja           | Landing        |
+| --------------------- | -------------- |
+| Register mobile light | Landing mobile |
+
 
 ---
 
 ### 📱 Mobile — tryb ciemny
 
-| Logowanie | Rejestracja | Wyniki gry |
-|:---:|:---:|:---:|
-| ![Login mobile dark](QuizArena_Screenshots/login_mobile_dark.png) | ![Register mobile dark](QuizArena_Screenshots/register_mobile_dark.png) | ![Summary mobile dark](QuizArena_Screenshots/summary_mobile_dark.png) |
+
+| Logowanie         | Rejestracja          | Wyniki gry          |
+| ----------------- | -------------------- | ------------------- |
+| Login mobile dark | Register mobile dark | Summary mobile dark |
+
+
 
 | Alert wyjścia z gry | Landing — widok 2 | Landing — widok 3 |
-|:---:|:---:|:---:|
-| ![Exit game alert](QuizArena_Screenshots/exit_game_alert_mobile_dark.png) | ![Landing mobile 2](QuizArena_Screenshots/landing_2_mobile.png) | ![Landing mobile 3](QuizArena_Screenshots/landing_3_mobile.png) |
+| ------------------- | ----------------- | ----------------- |
+| Exit game alert     | Landing mobile 2  | Landing mobile 3  |
+
 
 ---
 
 ### 🛡️ Panel administracyjny
 
-| Widok 1 | Widok 2 |
-|:---:|:---:|
-| ![Admin panel 1](QuizArena_Screenshots/admin_panel1.png) | ![Admin panel 2](QuizArena_Screenshots/admin_panel2.png) |
 
-| Widok 3 | Widok 4 |
-|:---:|:---:|
-| ![Admin panel 3](QuizArena_Screenshots/admin_panel3.png) | ![Admin panel 4](QuizArena_Screenshots/admin_panel4.png) |
+| Widok 1       | Widok 2       |
+| ------------- | ------------- |
+| Admin panel 1 | Admin panel 2 |
+
+
+
+| Widok 3       | Widok 4       |
+| ------------- | ------------- |
+| Admin panel 3 | Admin panel 4 |
+
 
 ---
 
@@ -561,10 +611,12 @@ docker compose exec app vendor/bin/phpunit --testsuite Integration --testdox
 
 ### Co jest pokryte testami
 
-| Suite | Pliki | Zakres |
-|-------|-------|--------|
-| **Unit** (40) | `AuthTest`, `EnvTest`, `GameExceptionTest`, `AuthControllerValidationTest`, `QuizControllerValidationTest`, `GameSessionTest`, `GamePlayServiceUnitTest`, `UserTest` | Sesja, CSRF, walidacja formularzy, autoryzacja sesji (mock PDO), punktacja |
-| **Integration** (8) | `GamePlayServiceTest` | IDOR, idempotencja `finish`, ownership sesji, duplikat odpowiedzi (PostgreSQL) |
+
+| Suite               | Pliki                                                                                                                                                                | Zakres                                                                         |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| **Unit** (40)       | `AuthTest`, `EnvTest`, `GameExceptionTest`, `AuthControllerValidationTest`, `QuizControllerValidationTest`, `GameSessionTest`, `GamePlayServiceUnitTest`, `UserTest` | Sesja, CSRF, walidacja formularzy, autoryzacja sesji (mock PDO), punktacja     |
+| **Integration** (8) | `GamePlayServiceTest`                                                                                                                                                | IDOR, idempotencja `finish`, ownership sesji, duplikat odpowiedzi (PostgreSQL) |
+
 
 > Brak testów smoke Bash/curl — planowane jako rozszerzenie.
 
@@ -574,44 +626,41 @@ docker compose exec app vendor/bin/phpunit --testsuite Integration --testdox
 
 ### Funkcjonalność
 
-- [x] Rejestracja użytkownika z walidacją
-- [x] Logowanie / wylogowanie z sesją
-- [x] Role USER / ADMIN + status konta (ACTIVE / SUSPENDED / BANNED)
-- [x] Przeglądanie quizów (filtry, wyszukiwarka, paginacja)
-- [x] Tworzenie quizów (dynamiczny kreator JS)
-- [x] Silnik gry (API start / answer / finish)
-- [x] XP, poziomy, osiągnięcia
-- [x] Leaderboard z filtrem okresu
-- [x] Profil użytkownika + historia gier
-- [x] Oceny quizów (1–5 gwiazdek)
-- [x] Powiadomienia (polling co 30 s)
-- [x] Panel administracyjny + audit log
-- [x] Tryb jasny / ciemny + `localStorage`
-- [x] Responsywny design (mobile bottom nav, breakpoints)
-- [x] PHPUnit — 40 unit + 8 integracyjnych
+- Rejestracja użytkownika z walidacją
+- Logowanie / wylogowanie z sesją
+- Role USER / ADMIN + status konta (ACTIVE / SUSPENDED / BANNED)
+- Przeglądanie quizów (filtry, wyszukiwarka, paginacja)
+- Tworzenie quizów (dynamiczny kreator JS)
+- Silnik gry (API start / answer / finish)
+- XP, poziomy, osiągnięcia
+- Leaderboard z filtrem okresu
+- Profil użytkownika + historia gier
+- Oceny quizów (1–5 gwiazdek)
+- Powiadomienia (polling co 30 s)
+- Panel administracyjny + audit log
+- Tryb jasny / ciemny + `localStorage`
+- Responsywny design (mobile bottom nav, breakpoints)
+- PHPUnit — 40 unit + 8 integracyjnych
 
 ### Baza danych
 
-- [x] Relacje 1:N (users → quizzes → questions → answers)
-- [x] Relacja M:N user ↔ achievement (`user_achievements`)
-- [x] Klucze obce z `ON DELETE CASCADE`
-- [x] Indeksy na kluczowych kolumnach
-- [x] Ograniczenia CHECK (difficulty, rating, chosen_index)
-- [x] UNIQUE na `(session_id, question_id)` w `game_answers`
-- [x] Seed z przykładowymi quizami
-- [x] Widoki SQL (`v_quiz_stats`, `v_player_leaderboard`, `v_session_summary`, `v_user_achievement_progress`)
-- [ ] Triggery / funkcje PL/pgSQL
+- Relacje 1:N (users → quizzes → questions → answers)
+- Relacja M:N user ↔ achievement (`user_achievements`)
+- Klucze obce z `ON DELETE CASCADE`
+- Indeksy na kluczowych kolumnach
+- Ograniczenia CHECK (difficulty, rating, chosen_index)
+- UNIQUE na `(session_id, question_id)` w `game_answers`
+- Seed z przykładowymi quizami
+- Widoki SQL (`v_quiz_stats`, `v_player_leaderboard`, `v_session_summary`, `v_user_achievement_progress`)
+
 
 ### Kod i architektura
 
-- [x] PHP 8.3 OOP, PSR-4 autoloading
-- [x] Warstwa Models + Controllers + Services
-- [x] Docker + Docker Compose
-- [x] Fetch API (gra, powiadomienia, oceny)
-- [x] CSRF na formularzach
-- [ ] Centralny router (obecnie: routing plikowy)
-- [ ] CI/CD
-- [ ] Rate limiting
+- PHP 8.3 OOP, PSR-4 autoloading
+- Warstwa Models + Controllers + Services
+- Docker + Docker Compose
+- Fetch API (gra, powiadomienia, oceny)
+- CSRF na formularzach
 
 ---
 
