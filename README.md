@@ -416,7 +416,6 @@ cat database/views.sql | docker compose exec -T db psql -U postgres -d quizarena
 | Klucze obce + CASCADE       | ✅ `database/schema.sql`                              |
 | Indeksy                     | ✅ m.in. quiz_id, session_id, user_id                 |
 | Widoki SQL (`CREATE VIEW`)  | ✅ `database/views.sql` (4 widoki)                    |
-| Triggery / funkcje PL/pgSQL | ❌ brak                                               |
 | Transakcje w aplikacji      | ✅ m.in. tworzenie quizu, finish sesji (`FOR UPDATE`) |
 
 
@@ -442,7 +441,7 @@ cat database/views.sql | docker compose exec -T db psql -U postgres -d quizarena
 
 ## Widoki aplikacji — galeria
 
-Zrzuty ekranu w katalogu `[QuizArena_Screenshots/](QuizArena_Screenshots/)`.
+Zrzuty ekranu w katalogu [`QuizArena_Screenshots/`](QuizArena_Screenshots/).
 
 Przełącznik motywu: ikona ☀️ / 🌙 w prawym górnym rogu (obok dzwonka powiadomień).
 Wybór zapisywany w `localStorage` (`quizarena-theme`) — przetrwa odświeżenie strony.
@@ -451,98 +450,73 @@ Wybór zapisywany w `localStorage` (`quizarena-theme`) — przetrwa odświeżeni
 
 ### 🖥️ Desktop — tryb jasny
 
+| Dashboard | Przeglądanie quizów | Tworzenie quizu |
+|:---:|:---:|:---:|
+| ![Dashboard light](QuizArena_Screenshots/dashboard_desktop_light.png) | ![Browse light](QuizArena_Screenshots/browse_desktop_light.png) | ![Create light](QuizArena_Screenshots/createquiz_desktop_light.png) |
 
-| Dashboard       | Przeglądanie quizów | Tworzenie quizu |
-| --------------- | ------------------- | --------------- |
-| Dashboard light | Browse light        | Create light    |
-
-
-
-| Profil        | Leaderboard       | Powiadomienia       |
-| ------------- | ----------------- | ------------------- |
-| Profile light | Leaderboard light | Notifications light |
-
+| Profil | Leaderboard | Powiadomienia |
+|:---:|:---:|:---:|
+| ![Profile light](QuizArena_Screenshots/profile_desktop_light.png) | ![Leaderboard light](QuizArena_Screenshots/leaderbeoard_desktop_light.png) | ![Notifications light](QuizArena_Screenshots/dashboard_notifications_desktop_light.png) |
 
 ---
 
 ### 🖥️ Desktop — tryb ciemny
 
+| Dashboard | Przeglądanie quizów | Profil |
+|:---:|:---:|:---:|
+| ![Dashboard dark](QuizArena_Screenshots/dashboard_desktop_dark.png) | ![Browse dark](QuizArena_Screenshots/browse_desktop_dark.png) | ![Profile dark](QuizArena_Screenshots/profile_desktop_dark.png) |
 
-| Dashboard      | Przeglądanie quizów | Profil       |
-| -------------- | ------------------- | ------------ |
-| Dashboard dark | Browse dark         | Profile dark |
+| Leaderboard | Przed grą | Gra — poprawna odpowiedź |
+|:---:|:---:|:---:|
+| ![Leaderboard dark](QuizArena_Screenshots/leaderboard_desktop_dark.png) | ![Pregame dark](QuizArena_Screenshots/pregame_desktop_dark.png) | ![Game correct dark](QuizArena_Screenshots/gamecorrect_desktop_dark.png) |
 
-
-
-| Leaderboard      | Przed grą    | Gra — poprawna odpowiedź |
-| ---------------- | ------------ | ------------------------ |
-| Leaderboard dark | Pregame dark | Game correct dark        |
-
-
-
-| Gra — błędna odpowiedź | Logowanie  | Rejestracja   |
-| ---------------------- | ---------- | ------------- |
-| Game incorrect dark    | Login dark | Register dark |
-
-
+| Gra — błędna odpowiedź | Logowanie | Rejestracja |
+|:---:|:---:|:---:|
+| ![Game incorrect dark](QuizArena_Screenshots/gameincorrect_desktop_dark.png) | ![Login dark](QuizArena_Screenshots/login_desktop_dark.png) | ![Register dark](QuizArena_Screenshots/register_desktop_dark.png) |
 
 | Landing (strona główna) | Landing — sekcja 2 |
-| ----------------------- | ------------------ |
-| Landing                 | Landing 2          |
-
+|:---:|:---:|
+| ![Landing](QuizArena_Screenshots/landing_desktop.png) | ![Landing 2](QuizArena_Screenshots/landing2_desktop.png) |
 
 ---
 
 ### 📱 Mobile — tryb jasny
 
+| Dashboard | Przeglądanie | Profil |
+|:---:|:---:|:---:|
+| ![Dashboard mobile light](QuizArena_Screenshots/dashboard_mobile_light.png) | ![Browse mobile light](QuizArena_Screenshots/browse_mobile_light.png) | ![Profile mobile light](QuizArena_Screenshots/profile_mobile_light.png) |
 
-| Dashboard              | Przeglądanie        | Profil               |
-| ---------------------- | ------------------- | -------------------- |
-| Dashboard mobile light | Browse mobile light | Profile mobile light |
+| Leaderboard | Wyniki gry | Logowanie |
+|:---:|:---:|:---:|
+| ![Leaderboard mobile light](QuizArena_Screenshots/leaderboard_mobile_light.png) | ![Summary mobile light](QuizArena_Screenshots/summary_mobile_light.png) | ![Login mobile light](QuizArena_Screenshots/login_mobile_light.png) |
 
-
-
-| Leaderboard              | Wyniki gry           | Logowanie          |
-| ------------------------ | -------------------- | ------------------ |
-| Leaderboard mobile light | Summary mobile light | Login mobile light |
-
-
-
-| Rejestracja           | Landing        |
-| --------------------- | -------------- |
-| Register mobile light | Landing mobile |
-
+| Rejestracja | Landing |
+|:---:|:---:|
+| ![Register mobile light](QuizArena_Screenshots/register_mobile_light.png) | ![Landing mobile](QuizArena_Screenshots/landing_mobile.png) |
 
 ---
 
 ### 📱 Mobile — tryb ciemny
 
-
-| Logowanie         | Rejestracja          | Wyniki gry          |
-| ----------------- | -------------------- | ------------------- |
-| Login mobile dark | Register mobile dark | Summary mobile dark |
-
-
+| Logowanie | Rejestracja | Wyniki gry |
+|:---:|:---:|:---:|
+| ![Login mobile dark](QuizArena_Screenshots/login_mobile_dark.png) | ![Register mobile dark](QuizArena_Screenshots/register_mobile_dark.png) | ![Summary mobile dark](QuizArena_Screenshots/summary_mobile_dark.png) |
 
 | Alert wyjścia z gry | Landing — widok 2 | Landing — widok 3 |
-| ------------------- | ----------------- | ----------------- |
-| Exit game alert     | Landing mobile 2  | Landing mobile 3  |
-
+|:---:|:---:|:---:|
+| ![Exit game alert](QuizArena_Screenshots/exit_game_alert_mobile_dark.png) | ![Landing mobile 2](QuizArena_Screenshots/landing_2_mobile.png) | ![Landing mobile 3](QuizArena_Screenshots/landing_3_mobile.png) |
 
 ---
 
 ### 🛡️ Panel administracyjny
 
+| Widok 1 | Widok 2 |
+|:---:|:---:|
+| ![Admin panel 1](QuizArena_Screenshots/admin_panel1.png) | ![Admin panel 2](QuizArena_Screenshots/admin_panel2.png) |
 
-| Widok 1       | Widok 2       |
-| ------------- | ------------- |
-| Admin panel 1 | Admin panel 2 |
-
-
-
-| Widok 3       | Widok 4       |
-| ------------- | ------------- |
-| Admin panel 3 | Admin panel 4 |
+| Widok 3 | Widok 4 |
+|:---:|:---:|
+| ![Admin panel 3](QuizArena_Screenshots/admin_panel3.png) | ![Admin panel 4](QuizArena_Screenshots/admin_panel4.png) |
 
 
 ---
